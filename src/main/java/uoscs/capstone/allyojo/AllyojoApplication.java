@@ -9,5 +9,5 @@ public class AllyojoApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AllyojoApplication.class, args);
 	}
-	// commit
+	// commit..
 }
