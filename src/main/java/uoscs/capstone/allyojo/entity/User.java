@@ -3,13 +3,14 @@ package uoscs.capstone.allyojo.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Builder
 public class User {
 
     @Id
@@ -18,13 +19,17 @@ public class User {
     private Long userId;
 
     @Column(nullable = false)
-    private String loginId;
+    private String username; // 로그인 아이디
 
     @Column(nullable = false)
-    private String password;
+    private String password; // 로그인 비밀번호
 
     @Column(nullable = false)
-    private String username;
+    private String name; // 사람이름
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserGrade userGrade; // premium or basic
 
     @Column(nullable = false)
     private String phoneNumber;
@@ -37,4 +42,23 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Todo> todoList;
+
+    @Builder
+    public User(
+            String username,
+            String password,
+            String name,
+            UserGrade usergrade,
+            String phoneNumber,
+            String gurdianPhoneNumber) {
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.userGrade = usergrade;
+        this.phoneNumber = phoneNumber;
+        this.guardianPhoneNumber = guardianPhoneNumber;
+    }
 }
+
+
+
