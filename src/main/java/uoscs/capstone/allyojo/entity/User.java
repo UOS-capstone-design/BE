@@ -3,8 +3,6 @@ package uoscs.capstone.allyojo.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -48,13 +46,13 @@ public class User {
             String username,
             String password,
             String name,
-            UserGrade usergrade,
+            UserGrade userGrade,
             String phoneNumber,
-            String gurdianPhoneNumber) {
+            String guardianPhoneNumber) {
         this.username = username;
         this.password = password;
         this.name = name;
-        this.userGrade = usergrade;
+        this.userGrade = userGrade;
         this.phoneNumber = phoneNumber;
         this.guardianPhoneNumber = guardianPhoneNumber;
     }

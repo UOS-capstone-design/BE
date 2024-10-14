@@ -33,7 +33,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         String jwtHeader = request.getHeader(JwtProperties.HEADER_STRING);
-
+        log.info("인증이 필요한 요청입니다. (BasicAuthenticationFilter -> JwtAuthorizationFilter)");
         // jwtHeader가 Bearer 방식으로 정상적으로 왔다면
         if (jwtHeader != null && jwtHeader.startsWith(JwtProperties.TOKEN_PREFIX)) {
             // prefix를 자르고 헤더 부분만 (Bearer 자름)
@@ -42,6 +42,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             // 서명 후 유저네임을 claim으로부터 가져옴
             String username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET))
                     .build().verify(jwtToken).getClaim("username").asString();
+            log.info("JwtAuthorizationFilter" + "USERNAME: {}", username);
 
             // 유저네임이 널인 경우 예외처리해야 함.
             if (username != null) {
@@ -53,9 +54,12 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
                 // 시큐리티 세션에 Authentication 객체를 넣어줌
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-
+                log.info("인증 성공" + " Authentication: {}", authentication);
                 chain.doFilter(request, response);
             }
+        } else { // jwt 헤더가 없는 경우 -> 다음 필터로 이동
+            chain.doFilter(request, response);
+            log.info("jwt 헤더가 없습니다.");
         }
     }
 }
