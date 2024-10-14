@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import uoscs.capstone.allyojo.config.jwt.JwtAuthenticationFilter;
 import uoscs.capstone.allyojo.config.jwt.JwtAuthorizationFilter;
 import uoscs.capstone.allyojo.repository.UserRepository;
@@ -31,11 +32,19 @@ public class SecurityConfig {
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> // 세션 비활성화 (JWT)
+                .sessionManagement(session -> // stateless session (JWT)
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilter(corsConfig.corsFilter())
-                .addFilter(new JwtAuthenticationFilter(authenticationManager))
-                .addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository))
+
+                //.addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository))
+                //BasicAuthenticationFilter 대체, JwtAuthenticationFilter보다 먼저 실행
+                // 토큰이 있는지 먼저 검증
+                .addFilterBefore(new JwtAuthorizationFilter(authenticationManager, userRepository), JwtAuthenticationFilter.class)
+
+                //.addFilter(new JwtAuthenticationFilter(authenticationManager))
+                //UsernamePasswordAuthenticationFilter 위치에 JwtAuthenticationFilter 추가
+                // 토큰이 없으면 로그인 후 토큰 발급
+                .addFilterAt(new JwtAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request

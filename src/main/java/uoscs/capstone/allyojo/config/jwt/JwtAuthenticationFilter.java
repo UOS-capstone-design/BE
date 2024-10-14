@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,6 +20,8 @@ import uoscs.capstone.allyojo.entity.User;
 import java.io.IOException;
 import java.util.Date;
 
+// /login 요청
+@Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager; // authenticationManager 주입
@@ -26,7 +29,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
-
+        log.info("로그인 진행 중 - JwtAuthenticationFilter - attemptAuthentication");
         try {
             ObjectMapper mapper = new ObjectMapper();
             User user = mapper.readValue(request.getInputStream(), User.class);
@@ -36,6 +39,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             // 인증 성공 시 authentication 리턴. 이 부분 예외 처리해야 하나?
             Authentication authentication = authenticationManager.authenticate(token); // 토큰을 포함하여 인증 진행
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+            log.info("principalDetails: {}", principalDetails);
 
             return authentication;
         } catch (IOException e) {
@@ -55,9 +59,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
                 .withClaim("id", principalDetails.getUser().getUserId())
                 .withClaim("username", principalDetails.getUser().getUsername())
-                .withClaim("usergrade", principalDetails.getUser().getUserGrade().name())
+                .withClaim("userGrade", principalDetails.getUser().getUserGrade().name())
                 .sign(Algorithm.HMAC512(JwtProperties.SECRET));
-
+        log.info("로그인 성공 - JwtAuthenticationFilter - successfulAuthentication");
+        log.info("jwtToken: {}", jwtToken);
         response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken); // 헤더에 토큰 추가
     }
 
