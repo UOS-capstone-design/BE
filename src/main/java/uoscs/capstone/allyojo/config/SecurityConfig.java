@@ -41,14 +41,15 @@ public class SecurityConfig {
                 //UsernamePasswordAuthenticationFilter 위치에 JwtAuthenticationFilter 추가
                 // 토큰이 없으면 로그인 후 토큰 발급
                 .addFilter(new JwtAuthenticationFilter(authenticationManager))
-
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("/user/join").permitAll()
+                        .requestMatchers("/login").permitAll())
                 // 얘가 문제임
                 //.addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository))
                 //BasicAuthenticationFilter 대체, JwtAuthenticationFilter보다 먼저 실행
                 // 토큰이 있는지 먼저 검증
-                .addFilterBefore(new JwtAuthorizationFilter(authenticationManager, userRepository), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new JwtAuthorizationFilter(authenticationManager, userRepository), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/user/join").permitAll()
                         .requestMatchers("test").hasRole("PREMIUM")
                         .requestMatchers("user/jwtTest").authenticated()
                         .anyRequest().permitAll()) // 나중에 Authenticated로
