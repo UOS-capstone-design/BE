@@ -1,4 +1,4 @@
-package uoscs.capstone.allyojo.config.jwt;
+package uoscs.capstone.allyojo.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -7,14 +7,16 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.apache.bcel.classfile.ExceptionTable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import uoscs.capstone.allyojo.config.auth.PrincipalDetails;
+import uoscs.capstone.allyojo.auth.PrincipalDetails;
 import uoscs.capstone.allyojo.entity.User;
+import uoscs.capstone.allyojo.exception.BusinessException;
+import uoscs.capstone.allyojo.exception.ErrorCode;
+import uoscs.capstone.allyojo.exception.JwtException;
 import uoscs.capstone.allyojo.repository.UserRepository;
 
 import java.io.IOException;
@@ -35,11 +37,11 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             throws IOException, ServletException {
         String jwtHeader = request.getHeader(JwtProperties.HEADER_STRING);
         log.info("1. 권한 인증이 필요한 요청입니다. (BasicAuthenticationFilter -> JwtAuthorizationFilter)");
-
+        log.info("jwtHeader = {}", jwtHeader);
         log.info("2. 헤더 확인");
-        if (jwtHeader == null || !jwtHeader.startsWith(JwtProperties.HEADER_STRING)) {
+        if (jwtHeader == null || !jwtHeader.startsWith(JwtProperties.TOKEN_PREFIX)) {
             chain.doFilter(request, response); // 다음 필터로 넘깁니다.
-            log.info("2-1. jwt 헤더가 없습니다.");
+            log.info("2-11111. jwt 헤더가 없습니다.");
             return;
         }
 
@@ -58,7 +60,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                     .asString();
             log.info("JwtAuthorizationFilter" + "USERNAME: {}", username);
         } catch (Exception e) {
-            e.printStackTrace();
+            // jwt 서명 에러
+            throw new JwtException(ErrorCode.JWT_SIGNATURE_ERROR);
             //throw new exception(exmessage.jwt.errorformat);
         }
 

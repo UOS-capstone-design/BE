@@ -1,4 +1,4 @@
-package uoscs.capstone.allyojo.config.auth;
+package uoscs.capstone.allyojo.auth;
 
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
