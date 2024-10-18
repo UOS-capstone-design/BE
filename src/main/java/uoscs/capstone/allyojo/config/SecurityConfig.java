@@ -1,6 +1,7 @@
 package uoscs.capstone.allyojo.config;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,6 +16,7 @@ import uoscs.capstone.allyojo.config.jwt.JwtAuthenticationFilter;
 import uoscs.capstone.allyojo.config.jwt.JwtAuthorizationFilter;
 import uoscs.capstone.allyojo.repository.UserRepository;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -35,21 +37,22 @@ public class SecurityConfig {
                 .sessionManagement(session -> // stateless session (JWT)
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilter(corsConfig.corsFilter())
-
-                //.addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository))
-                //BasicAuthenticationFilter 대체, JwtAuthenticationFilter보다 먼저 실행
-                // 토큰이 있는지 먼저 검증
-                .addFilterBefore(new JwtAuthorizationFilter(authenticationManager, userRepository), JwtAuthenticationFilter.class)
-
                 //.addFilter(new JwtAuthenticationFilter(authenticationManager))
                 //UsernamePasswordAuthenticationFilter 위치에 JwtAuthenticationFilter 추가
                 // 토큰이 없으면 로그인 후 토큰 발급
-                .addFilterAt(new JwtAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
-                .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable)
+                .addFilter(new JwtAuthenticationFilter(authenticationManager))
+
+                // 얘가 문제임
+                //.addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository))
+                //BasicAuthenticationFilter 대체, JwtAuthenticationFilter보다 먼저 실행
+                // 토큰이 있는지 먼저 검증
+                .addFilterBefore(new JwtAuthorizationFilter(authenticationManager, userRepository), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(request -> request
+                        .requestMatchers("/user/join").permitAll()
                         .requestMatchers("test").hasRole("PREMIUM")
-                        .anyRequest().authenticated());
+                        .anyRequest().permitAll()) // 나중에 Authenticated로
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
