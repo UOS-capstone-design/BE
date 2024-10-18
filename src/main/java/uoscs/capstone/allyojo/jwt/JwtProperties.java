@@ -1,4 +1,4 @@
-package uoscs.capstone.allyojo.config.jwt;
+package uoscs.capstone.allyojo.jwt;
 
 public class JwtProperties {
     public static final String SECRET = "allyojo";

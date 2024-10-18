@@ -1,4 +1,4 @@
-package uoscs.capstone.allyojo.config.auth;
+package uoscs.capstone.allyojo.auth;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

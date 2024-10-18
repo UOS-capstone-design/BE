@@ -1,4 +1,4 @@
-package uoscs.capstone.allyojo.config.jwt;
+package uoscs.capstone.allyojo.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -13,11 +13,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import uoscs.capstone.allyojo.config.auth.PrincipalDetails;
+import uoscs.capstone.allyojo.auth.PrincipalDetails;
 import uoscs.capstone.allyojo.entity.User;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 // /login 요청
@@ -42,8 +44,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             log.info("principalDetails: {}", principalDetails);
 
             return authentication;
+
         } catch (IOException e) {
             throw new RuntimeException(e); // 추후 exceptionHandler 구현
+        } catch (UsernameNotFoundException e) {
+            log.error("usernameNotFoundException", e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -71,6 +77,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed)
             throws IOException, ServletException {
+        log.error("로그인 실패", failed);
         super.unsuccessfulAuthentication(request, response, failed);
     }
 }

@@ -12,8 +12,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import uoscs.capstone.allyojo.config.jwt.JwtAuthenticationFilter;
-import uoscs.capstone.allyojo.config.jwt.JwtAuthorizationFilter;
+import uoscs.capstone.allyojo.jwt.JwtAuthenticationFilter;
+import uoscs.capstone.allyojo.jwt.JwtAuthorizationFilter;
 import uoscs.capstone.allyojo.repository.UserRepository;
 
 @Slf4j
@@ -50,6 +50,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/user/join").permitAll()
                         .requestMatchers("test").hasRole("PREMIUM")
+                        .requestMatchers("user/jwtTest").authenticated()
                         .anyRequest().permitAll()) // 나중에 Authenticated로
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable);
