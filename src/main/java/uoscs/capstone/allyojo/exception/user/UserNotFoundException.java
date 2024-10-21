@@ -8,6 +8,6 @@ import uoscs.capstone.allyojo.exception.global.ErrorCode;
 public class UserNotFoundException extends BusinessException {
 
     public UserNotFoundException() {
-        super(ErrorCode.User_NOT_FOUND);
+        super(ErrorCode.USER_NOT_FOUND);
     }
 }
