@@ -1,4 +1,4 @@
-package uoscs.capstone.allyojo.exception;
+package uoscs.capstone.allyojo.exception.global;
 
 import lombok.Getter;
 

@@ -14,9 +14,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import uoscs.capstone.allyojo.auth.PrincipalDetails;
 import uoscs.capstone.allyojo.entity.User;
-import uoscs.capstone.allyojo.exception.BusinessException;
-import uoscs.capstone.allyojo.exception.ErrorCode;
-import uoscs.capstone.allyojo.exception.JwtException;
+import uoscs.capstone.allyojo.exception.global.ErrorCode;
+import uoscs.capstone.allyojo.exception.global.JwtException;
 import uoscs.capstone.allyojo.repository.UserRepository;
 
 import java.io.IOException;
@@ -40,7 +39,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         log.info("jwtHeader = {}", jwtHeader);
         log.info("2. 헤더 확인");
         if (jwtHeader == null || !jwtHeader.startsWith(JwtProperties.TOKEN_PREFIX)) {
-            chain.doFilter(request, response); // 다음 필터로 넘깁니다.
+            chain.doFilter(request, response); // jwt 헤더가 없는 요청의 경우 다음 필터로 넘깁니다.
             log.info("2-11111. jwt 헤더가 없습니다.");
             return;
         }
