@@ -1,4 +1,4 @@
-package uoscs.capstone.allyojo.dto.request;
+package uoscs.capstone.allyojo.dto.user.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

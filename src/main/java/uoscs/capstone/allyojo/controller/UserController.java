@@ -9,8 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import uoscs.capstone.allyojo.dto.request.UserJoinRequestDTO;
-import uoscs.capstone.allyojo.dto.response.UserResponseDTO;
+import uoscs.capstone.allyojo.dto.user.request.UserJoinRequestDTO;
+import uoscs.capstone.allyojo.dto.user.response.UserResponseDTO;
 import uoscs.capstone.allyojo.entity.User;
 import uoscs.capstone.allyojo.service.UserService;
 

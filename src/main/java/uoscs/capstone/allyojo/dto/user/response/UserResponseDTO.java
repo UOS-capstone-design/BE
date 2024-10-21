@@ -1,4 +1,4 @@
-package uoscs.capstone.allyojo.dto.response;
+package uoscs.capstone.allyojo.dto.user.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -14,7 +14,6 @@ public class Alarm {
 
     @Id
     @Column(unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long alarmId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -25,49 +24,54 @@ public class Alarm {
     @JoinColumn(name = "mission_id", nullable = false)
     private Mission mission;
 
-    // 요일, 시간, 엄격, 반복간격, 진동
+    @Column(nullable = false) // 알람이름
+    private String title;
 
-    // 알람요일: 7자리 비트
-    @Column(nullable = false)
-    private Integer alarmDays = 0;
-
-    // 알람시간: LocalTime
-    @Column(nullable = false)
+    @Column(nullable = false) // 알람시간: LocalTime
     private LocalTime alarmTime;
 
-    // 엄격모드: Boolean
-    @Column(nullable = false)
-    private Boolean strictMode;
+    @Column(nullable = false) // 알람활성여부
+    private Boolean active;
 
-    // 반복간격: Integer (분 단위 저장)
-    @Column(nullable = false)
-    private Integer repeatInterval;
+    @Column(nullable = false) // 알람요일: 7자리 비트
+    private Integer repeat = 0;
 
-    // 진동여부: Boolean
-    @Column(nullable = false)
-    private Boolean useVibration;
+    @Column(nullable = false) // 지연횟수: 몇 번 울렸는지
+    private Integer delayTimes;
+
+    @Column(nullable = false)  // 엄격모드: Boolean
+    private Boolean restrictAlarm;
+
+    @Column(nullable = false)  // 진동여부: Boolean
+    private Boolean isVibration;
+
+    @Column(nullable = false) // 음향크기
+    private Integer volume;
+
+    @Column(nullable = false) // 반복간격: Integer (분 단위 저장)
+    private Integer interval;
 
     //// 알람요일 관련 메서드
     // 요일별 알람 비트를 체크하는 메서드
     public boolean isAlarmSetForDay(int dayIndex) {
         // dayIndex: 0 (월요일) ~ 6 (일요일)
-        return (alarmDays & (1 << dayIndex)) != 0;
+        return (repeat & (1 << dayIndex)) != 0;
     }
 
     // 특정 요일에 알람을 설정하는 메서드
     public void setAlarmForDay(int dayIndex) {
         // dayIndex: 0 (월요일) ~ 6 (일요일)
-        alarmDays |= (1 << dayIndex);
+        repeat |= (1 << dayIndex);
     }
 
     // 특정 요일의 알람을 해제하는 메서드
     public void unsetAlarmForDay(int dayIndex) {
-        alarmDays &= ~(1 << dayIndex);
+        repeat &= ~(1 << dayIndex);
     }
 
     // 전체 알람 요일을 출력하는 메서드 (디버깅용)
     public String getAlarmDaysAsBinary() {
-        return String.format("%07d", Integer.parseInt(Integer.toBinaryString(alarmDays)));
+        return String.format("%07d", Integer.parseInt(Integer.toBinaryString(repeat)));
     }
 
 }
