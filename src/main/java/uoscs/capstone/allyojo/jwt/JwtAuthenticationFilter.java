@@ -69,6 +69,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .sign(Algorithm.HMAC512(JwtProperties.SECRET));
         log.info("로그인 성공 - JwtAuthenticationFilter - successfulAuthentication");
         log.info("jwtToken: {}", jwtToken);
+        log.info("테스트용 토큰 복붙: {}", "Bearer " + jwtToken);
         response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken); // 헤더에 토큰 추가
     }
 
@@ -78,6 +79,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed)
             throws IOException, ServletException {
         log.error("로그인 실패", failed);
+
+//        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
+//        response.setContentType("application/json; charset=utf-8");
+        // 401 에러 담겨서 갑니다. 처리 부탁드려요
         super.unsuccessfulAuthentication(request, response, failed);
     }
 }

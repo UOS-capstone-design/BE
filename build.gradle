@@ -33,8 +33,19 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+
 	// jwt
 	implementation group: 'com.auth0', name: 'java-jwt', version: '4.4.0'
+
+	// swagger
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+
+	// security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// @Valid
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
 	//implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 	compileOnly 'org.projectlombok:lombok'

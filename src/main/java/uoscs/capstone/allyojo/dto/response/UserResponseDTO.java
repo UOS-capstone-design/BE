@@ -4,16 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import uoscs.capstone.allyojo.entity.User;
 
+
+// validation 필요
 @Data
 @AllArgsConstructor
-public class UserJoinResponseDTO {
+public class UserResponseDTO {
+
     private final String username;
     private final String name;
+    // usergrade는 디폴트로 BASIC
     private final String phoneNumber;
     private final String guardianPhoneNumber;
 
-    public static UserJoinResponseDTO fromUser(final User user) {
-        return new UserJoinResponseDTO(
+    public static UserResponseDTO fromUser(final User user) {
+        return new UserResponseDTO(
                 user.getUsername(),
                 user.getName(),
                 user.getPhoneNumber(),

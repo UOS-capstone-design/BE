@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import uoscs.capstone.allyojo.dto.request.UserJoinRequestDTO;
 import uoscs.capstone.allyojo.entity.User;
 import uoscs.capstone.allyojo.entity.UserGrade;
+import uoscs.capstone.allyojo.exception.user.UserNotFoundException;
 import uoscs.capstone.allyojo.repository.UserRepository;
 
 @Slf4j
@@ -36,6 +37,12 @@ public class UserService {
         return userRepository.save(user);
     }
     // 로그인은 /login으로 요청 보내주세요. JwtAuthenticationFilter가 처리
+
+    // 유저 조회
+    public User findById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException());
+    }
 
 
 }
