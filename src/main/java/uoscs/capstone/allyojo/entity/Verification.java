@@ -19,7 +19,7 @@ public class Verification {
 
     // 알람아이디, 검증일시, 검증결과, 측정값
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "alarm_id")
+    @JoinColumn(name = "alarmId")
     private Alarm alarm;
 
     @Column(nullable = false)

@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import uoscs.capstone.allyojo.entity.User;
+import uoscs.capstone.allyojo.exception.user.UserNotFoundException;
 import uoscs.capstone.allyojo.repository.UserRepository;
 
 @Slf4j
@@ -17,7 +18,8 @@ public class PrincipalDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User userEntity = userRepository.findByUsername(username);
+        User userEntity = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException());
         // 유저 없는 경우 예외
         if (userEntity == null) {
             throw new UsernameNotFoundException(username);

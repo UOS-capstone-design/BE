@@ -9,8 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import uoscs.capstone.allyojo.dto.request.UserJoinRequestDTO;
-import uoscs.capstone.allyojo.dto.response.UserResponseDTO;
+import uoscs.capstone.allyojo.dto.user.request.UserJoinRequestDTO;
+import uoscs.capstone.allyojo.dto.user.response.UserResponseDTO;
 import uoscs.capstone.allyojo.entity.User;
 import uoscs.capstone.allyojo.service.UserService;
 
@@ -29,13 +29,12 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> join(@Valid @RequestBody UserJoinRequestDTO userJoinRequestDTO) {
         User user = userService.joinUser(userJoinRequestDTO);
         UserResponseDTO userJoinResponseDTO = UserResponseDTO.fromUser(user);
-        log.info("join실행");
         return ResponseEntity.ok(userJoinResponseDTO);
     }
 
     @GetMapping("/{userid}")
     @Operation(summary = "유저 조회", description = "유저 아이디를 받아와 해당 유저의 정보를 조회합니다.")
-    public ResponseEntity<UserResponseDTO> getUser(@PathVariable("userid") long userid) {
+    public ResponseEntity<UserResponseDTO> getUserByUserId(@PathVariable("userid") long userid) {
         User user = userService.findById(userid);
         UserResponseDTO userResponseDTO = UserResponseDTO.fromUser(user);
 

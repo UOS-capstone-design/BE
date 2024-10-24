@@ -16,6 +16,7 @@ import uoscs.capstone.allyojo.auth.PrincipalDetails;
 import uoscs.capstone.allyojo.entity.User;
 import uoscs.capstone.allyojo.exception.global.ErrorCode;
 import uoscs.capstone.allyojo.exception.global.JwtException;
+import uoscs.capstone.allyojo.exception.user.UserNotFoundException;
 import uoscs.capstone.allyojo.repository.UserRepository;
 
 import java.io.IOException;
@@ -69,7 +70,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         if (username != null) {
             log.info("4. 서명이 정상적으로 완료되었습니다.");
             log.info("DB로부터 username 조회, PrincipalDetails 객체 생성 후 Authentication 생성");
-            User userEntity = userRepository.findByUsername(username);
+            User userEntity = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new UserNotFoundException());
             // Authentication 객체 만들기
             PrincipalDetails principalDetails = new PrincipalDetails(userEntity);
             Authentication authentication =
