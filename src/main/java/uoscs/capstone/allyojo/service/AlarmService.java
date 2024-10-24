@@ -58,6 +58,12 @@ public class AlarmService {
           return alarmRepository.findAllByUserUserId(userId); // 빈 리스트 반환 가능.
     }
 
+    // 알려줘 탭 전용 알람 리턴 ( alarmDays != 0 and delayTimes >= 1)
+    // TodoController에서 사용
+    public List<Alarm> findAlarmsByUserIdForTodo(Long userId) {
+        return alarmRepository.findAlarmsByUserIdForTodo(userId);
+    }
+
     // 알람 수정
     public Alarm updateAlarm(AlarmRequestDTO dto) {
         Alarm alarm = alarmRepository.findById(dto.getAlarmId())

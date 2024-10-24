@@ -15,7 +15,7 @@ public class Todo {
     // 유저아이디, 할일이름, 할일설명, 날짜시간
     @Id
     @Column(unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // @GeneratedValue(strategy = GenerationType.IDENTITY) 아이디 만들어서 주는거로 가정
     private Long todoId;
 
     @ManyToOne(fetch = FetchType.LAZY)

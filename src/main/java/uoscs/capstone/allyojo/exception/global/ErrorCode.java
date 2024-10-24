@@ -20,6 +20,10 @@ public enum ErrorCode {
 
     // Alarm
     ALARM_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "해당 아이디의 알람이 없습니다."),
+
+    // Todo
+    TODO_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "해당 아이디의 투두가 없습니다."),
+
     // jwt
     JWT_SIGNATURE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "토큰 서명 중 오류가 발생했습니다.");
 
