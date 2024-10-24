@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AddAlarmRequestDTO {
+public class AlarmRequestDTO {
     private Long alarmId;
     private String username; // findUserIdByUsername
     private String missionName; // findMissionIdByMissionName

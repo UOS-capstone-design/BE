@@ -12,7 +12,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AddAlarmResponseDTO {
+public class AlarmResponseDTO {
     private Long alarmId;
     private String title;
     private LocalTime alarmTime;
@@ -25,8 +25,8 @@ public class AddAlarmResponseDTO {
     private Integer alarmInterval;
 
     // 엔티티로부터 ResponseDTO 생성
-    public static AddAlarmResponseDTO fromAlarm(Alarm alarm) {
-        return AddAlarmResponseDTO.builder()
+    public static AlarmResponseDTO fromAlarm(Alarm alarm) {
+        return AlarmResponseDTO.builder()
                 .alarmId(alarm.getAlarmId())
                 .title(alarm.getTitle())
                 .alarmTime(alarm.getAlarmTime())
