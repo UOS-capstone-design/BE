@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uoscs.capstone.allyojo.dto.mission.request.MissionDTO;
 import uoscs.capstone.allyojo.entity.Mission;
 import uoscs.capstone.allyojo.service.MissionService;
 
@@ -23,8 +24,8 @@ public class MissionController {
     // 미션 등록
     @PostMapping("/add")
     @Operation(summary = "미션 추가", description = "새 미션을 추가합니다.")
-    public ResponseEntity<Mission> addMission(@RequestBody Mission mission) {
-        Mission savedMission = missionService.addMission(mission);
+    public ResponseEntity<Mission> addMission(@RequestBody MissionDTO missionDTO) {
+        Mission savedMission = missionService.addMission(missionDTO);
         return ResponseEntity.ok(savedMission);
     }
 
@@ -39,8 +40,8 @@ public class MissionController {
     // 미션 수정
     @PutMapping("/update")
     @Operation(summary = "미션 수정", description = "미션을 수정합니다.")
-    public ResponseEntity<Mission> updateMission(@RequestBody Mission mission) {
-        Mission updatedMission = missionService.updateMission(mission);
+    public ResponseEntity<Mission> updateMission(@RequestBody MissionDTO missionDTO) {
+        Mission updatedMission = missionService.updateMission(missionDTO);
         return ResponseEntity.ok(updatedMission);
     }
 

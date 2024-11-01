@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import uoscs.capstone.allyojo.dto.mission.request.MissionDTO;
 import uoscs.capstone.allyojo.entity.Mission;
 import uoscs.capstone.allyojo.exception.mission.MissionNotFoundException;
 import uoscs.capstone.allyojo.repository.MissionRepository;
@@ -17,7 +18,11 @@ import java.util.List;
 public class MissionService {
     private final MissionRepository missionRepository;
 
-    public Mission addMission(Mission mission) {
+    public Mission addMission(MissionDTO dto) {
+        Mission mission = Mission.builder()
+                .missionName(dto.getMissionName())
+                .description(dto.getDescription())
+                .build();
         return missionRepository.save(mission);
     }
 
@@ -25,7 +30,12 @@ public class MissionService {
         return missionRepository.findAll();
     }
 
-    public Mission updateMission(Mission mission) {
+    public Mission updateMission(MissionDTO dto) {
+        Mission mission = Mission.builder()
+                .missionName(dto.getMissionName())
+                .description(dto.getDescription())
+                .build();
+
         return missionRepository.save(mission);
     }
 

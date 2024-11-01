@@ -5,20 +5,28 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import uoscs.capstone.allyojo.dto.verification.request.ReportRequestDTO;
 import uoscs.capstone.allyojo.dto.verification.request.VerificationRequestDTO;
+import uoscs.capstone.allyojo.dto.verification.response.ReportResponseDTO;
+import uoscs.capstone.allyojo.dto.verification.response.VerificationResponseDTO;
 import uoscs.capstone.allyojo.entity.Alarm;
+import uoscs.capstone.allyojo.entity.Mission;
 import uoscs.capstone.allyojo.entity.User;
 import uoscs.capstone.allyojo.entity.Verification;
 import uoscs.capstone.allyojo.exception.alarm.AlarmNotFoundException;
+import uoscs.capstone.allyojo.exception.mission.MissionNotFoundException;
 import uoscs.capstone.allyojo.exception.user.UserNotFoundException;
 import uoscs.capstone.allyojo.repository.AlarmRepository;
+import uoscs.capstone.allyojo.repository.MissionRepository;
 import uoscs.capstone.allyojo.repository.UserRepository;
 import uoscs.capstone.allyojo.repository.VerificationRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalDouble;
 
 @Slf4j
 @Service
@@ -28,6 +36,7 @@ public class VerificationService {
     private final VerificationRepository verificationRepository;
     private final AlarmRepository alarmRepository;
     private final UserRepository userRepository;
+    private final MissionRepository missionRepository;
 
     public Verification addVerification(VerificationRequestDTO dto) {
         Alarm alarm = alarmRepository.findById(dto.getAlarmId())
@@ -49,11 +58,39 @@ public class VerificationService {
     }
 
     // 리포트 조회
-    public List<Verification> getVerificationsBetweenDates(LocalDate startDate, LocalDate endDate) {
-        LocalDateTime startDateTime = startDate.atStartOfDay();
-        LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
+    public ReportResponseDTO getReport(ReportRequestDTO dto) {
+//        LocalDateTime startDateTime = startDate.atStartOfDay();
+//        LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
+//
+//        return verificationRepository.findAllBetweenDate(startDateTime, endDateTime);
 
-        return verificationRepository.findAllBetweenDate(startDateTime, endDateTime);
+        Mission mission = missionRepository.findByMissionName(dto.getMissionName())
+                .orElseThrow(MissionNotFoundException::new);
+
+        List<Verification> verifications = verificationRepository
+                .findByUserUserIdAndAlarmMissionMissionIdAndVerificationDateTimeBetween(
+                        dto.getUserId(),
+                        mission.getMissionId(),
+                        dto.getStartDate().atStartOfDay(),
+                        dto.getEndDate().atTime(LocalTime.MAX)
+                );
+
+        // 평균 계산
+        Double averageValue = null;
+        if (dto.getMissionName().equals("혈압 측정") || dto.getMissionName().equals("혈당 측정")) {
+            OptionalDouble average = verifications.stream()
+                    .filter(v -> v.getValue() != null)
+                    .mapToDouble(Verification::getValue)
+                    .average();
+            averageValue = average.isPresent() ? average.getAsDouble() : 0.0;
+        }
+
+        List<VerificationResponseDTO> verificationDTOs = verifications.stream()
+                .map(VerificationResponseDTO::fromVerification)
+                .toList();
+
+        return new ReportResponseDTO(verificationDTOs, averageValue);
+
 
     }
 }

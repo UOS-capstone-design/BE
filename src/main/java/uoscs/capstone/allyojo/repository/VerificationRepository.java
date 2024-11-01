@@ -19,4 +19,11 @@ public interface VerificationRepository extends JpaRepository<Verification, Long
     List<Verification> findAllBetweenDate(
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate);
+
+    List<Verification> findByUserUserIdAndAlarmMissionMissionIdAndVerificationDateTimeBetween(
+            Long userId,
+            Long missionId,
+            LocalDateTime startDate,
+            LocalDateTime endDate
+    );
 }
