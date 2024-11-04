@@ -12,10 +12,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class VerificationRequestDTO {
-    private Long verificationId;
     private Long alarmId;
-    private Long userId;
+    private String username;
     private LocalDateTime verificationDateTime;
-    private String result;
     private Double value;
 }

@@ -12,6 +12,8 @@ import java.util.List;
 public interface AlarmRepository extends JpaRepository<Alarm, Long> {
     List<Alarm> findAllByUserUserId(Long userId);
 
-    @Query("select a from Alarm a where a.user.userId = :userId and a.alarmDays <> 0 and a.delayTimes >= 1")
-    List<Alarm> findAlarmsByUserIdForTodo(@Param("userId") Long userId);
+    List<Alarm> findAllByUserUsername(String username);
+
+    @Query("select a from Alarm a where a.user.username = :username and a.alarmDays <> 0 and a.delayTimes >= 1")
+    List<Alarm> findAlarmsByUsernameForTodo(@Param("username") String username);
 }

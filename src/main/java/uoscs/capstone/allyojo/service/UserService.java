@@ -39,8 +39,8 @@ public class UserService {
     // 로그인은 /login으로 요청 보내주세요. JwtAuthenticationFilter가 처리
 
     // 유저 조회
-    public User findById(Long userId) {
-        return userRepository.findById(userId)
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException());
     }
 

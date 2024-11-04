@@ -25,9 +25,6 @@ public class Alarm {
     @JoinColumn(name = "missionId", nullable = false)
     private Mission mission;
 
-    @Column(nullable = false) // 알람이름
-    private String title;
-
     @Column(nullable = false) // 알람시간: LocalTime
     private LocalTime alarmTime;
 

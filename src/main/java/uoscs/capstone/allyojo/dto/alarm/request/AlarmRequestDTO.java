@@ -15,8 +15,7 @@ public class AlarmRequestDTO {
     private Long alarmId;
     private String username; // findUserIdByUsername
     private String missionName; // findMissionIdByMissionName
-    private String title;
-    private LocalDateTime timer;
+    private LocalDateTime alarmTime;
     private String active; // 알람 활성 여부, "true / false"
     private Integer alarmDays; // 요일
     private Integer delayTimes;

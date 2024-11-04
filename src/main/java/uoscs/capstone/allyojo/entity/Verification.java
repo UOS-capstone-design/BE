@@ -29,9 +29,6 @@ public class Verification {
     @Column(nullable = false)
     private LocalDateTime verificationDateTime;
 
-    @Column(nullable = false)
-    private String result;
-
     @Column(nullable = true) // nullable. 측정 값이 없는 경우
     private Double value;
 }
