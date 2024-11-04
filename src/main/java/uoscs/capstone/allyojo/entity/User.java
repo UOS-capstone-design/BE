@@ -32,9 +32,6 @@ public class User {
     @Column(nullable = false)
     private String phoneNumber;
 
-    @Column(nullable = false)
-    private String guardianPhoneNumber;
-
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Alarm> alarms;
 
@@ -47,14 +44,12 @@ public class User {
             String password,
             String name,
             UserGrade userGrade,
-            String phoneNumber,
-            String guardianPhoneNumber) {
+            String phoneNumber) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.userGrade = userGrade;
         this.phoneNumber = phoneNumber;
-        this.guardianPhoneNumber = guardianPhoneNumber;
     }
 }
 

@@ -31,7 +31,6 @@ public class UserService {
                         .name(userJoinRequestDTO.getName())
                         .userGrade(UserGrade.BASIC)
                         .phoneNumber(userJoinRequestDTO.getPhoneNumber())
-                        .guardianPhoneNumber(userJoinRequestDTO.getGuardianPhoneNumber())
                         .build();
 
         return userRepository.save(user);
