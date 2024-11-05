@@ -50,6 +50,13 @@ public class UserController {
     }
 
     // 테스트용
+    @GetMapping("/testGuardian")
+    public String testGuardian() {
+        System.out.println("userService = " + userService);
+        return "보호자 권한 인증 성공.";
+    }
+
+    // 테스트용
     @GetMapping("/join")
     public String showUserJoinForm(Model model) {
         return "userJoin";

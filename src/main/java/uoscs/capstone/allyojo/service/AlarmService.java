@@ -12,6 +12,7 @@ import uoscs.capstone.allyojo.exception.alarm.AlarmNotFoundException;
 import uoscs.capstone.allyojo.exception.mission.MissionNotFoundException;
 import uoscs.capstone.allyojo.exception.user.UserNotFoundException;
 import uoscs.capstone.allyojo.repository.AlarmRepository;
+import uoscs.capstone.allyojo.repository.GuardianRepository;
 import uoscs.capstone.allyojo.repository.MissionRepository;
 import uoscs.capstone.allyojo.repository.UserRepository;
 
