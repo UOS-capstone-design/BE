@@ -5,15 +5,26 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import uoscs.capstone.allyojo.dto.alarm.request.AlarmRequestDTO;
 import uoscs.capstone.allyojo.dto.guardian.request.GuardianJoinRequestDTO;
+import uoscs.capstone.allyojo.dto.guardian.request.UpdateUsersAlarmRequestDTO;
+import uoscs.capstone.allyojo.entity.Alarm;
 import uoscs.capstone.allyojo.entity.Guardian;
+import uoscs.capstone.allyojo.entity.Mission;
 import uoscs.capstone.allyojo.entity.User;
+import uoscs.capstone.allyojo.exception.alarm.AlarmNotFoundException;
 import uoscs.capstone.allyojo.exception.guardian.GuardianNotFoundException;
+import uoscs.capstone.allyojo.exception.guardian.UserNotManagedException;
+import uoscs.capstone.allyojo.exception.mission.MissionNotFoundException;
 import uoscs.capstone.allyojo.exception.user.UserNotFoundException;
+import uoscs.capstone.allyojo.repository.AlarmRepository;
 import uoscs.capstone.allyojo.repository.GuardianRepository;
+import uoscs.capstone.allyojo.repository.MissionRepository;
 import uoscs.capstone.allyojo.repository.UserRepository;
 
 import java.util.List;
+
+import static java.lang.Boolean.parseBoolean;
 
 @Slf4j
 @Service
@@ -23,6 +34,8 @@ public class GuardianService {
     private final GuardianRepository guardianRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
+    private final MissionRepository missionRepository;
+    private final AlarmRepository alarmRepository;
 
     // 보호자 회원가입
     public Guardian joinGuardian(GuardianJoinRequestDTO guardianJoinRequestDTO) {
@@ -66,5 +79,95 @@ public class GuardianService {
                 .orElseThrow(GuardianNotFoundException::new);
 
         return guardian.getUsers();
+    }
+
+    // 보호자가 노인의 알람을 추가
+    public Alarm addAlarmForUser(String guardianName, String username, AlarmRequestDTO dto) {
+        Guardian guardian = guardianRepository.findByGuardianName(guardianName)
+                .orElseThrow(GuardianNotFoundException::new);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(UserNotFoundException::new);
+        Mission mission = missionRepository.findByMissionName(dto.getMissionName())
+                .orElseThrow(MissionNotFoundException::new);
+
+        // 보호자가 해당 노인을 관리하는지 확인
+        if (!guardian.getUsers().contains(user)) {
+            throw new UserNotManagedException();
+        }
+
+        Alarm alarm = Alarm.builder()
+                .alarmId(dto.getAlarmId())
+                .user(user)
+                .mission(mission)
+                .alarmTime(dto.getAlarmTime().toLocalTime())
+                .active(parseBoolean(dto.getActive()))
+                .alarmDays(dto.getAlarmDays())
+                .delayTimes(dto.getDelayTimes())
+                .restrictAlarm(parseBoolean(dto.getRestrictAlarm()))
+                .isVibration(parseBoolean(dto.getIsVibration()))
+                .volume(dto.getVolume())
+                .alarmInterval(dto.getAlarmInterval())
+                .build();
+
+        return alarmRepository.save(alarm);
+    }
+
+    // 보호자가 관리하는 노인의 알람 조회
+    public List<Alarm> getAlarmsForUser(String guardianName, String username) {
+        Guardian guardian = guardianRepository.findByGuardianName(guardianName)
+                .orElseThrow(GuardianNotFoundException::new);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(UserNotFoundException::new);
+        // 보호자가 해당 노인을 관리하는지 확인
+        if (!guardian.getUsers().contains(user)) {
+            throw new UserNotManagedException();
+        }
+
+        return alarmRepository.findAllByUserUsername(username);
+    }
+
+    // 보호자가 관리하는 노인의 알람 수정
+    public Alarm updateAlarmForUser(String guardianName, String username, UpdateUsersAlarmRequestDTO dto) {
+        Guardian guardian = guardianRepository.findByGuardianName(guardianName)
+                .orElseThrow(GuardianNotFoundException::new);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(UserNotFoundException::new);
+        Mission mission = missionRepository.findByMissionName(dto.getMissionName())
+                .orElseThrow(MissionNotFoundException::new);
+
+        // 보호자가 해당 노인을 관리하는지 확인
+        if (!guardian.getUsers().contains(user)) {
+            throw new UserNotManagedException();
+        }
+
+        Alarm alarm = alarmRepository.findById(dto.getAlarmId())
+                .orElseThrow(AlarmNotFoundException::new);
+
+        alarm.update(
+                mission,
+                dto.getAlarmTime(),
+                Boolean.parseBoolean(dto.getActive()),
+                dto.getAlarmDays(),
+                dto.getDelayTimes(),
+                Boolean.parseBoolean(dto.getRestrictAlarm()),
+                Boolean.parseBoolean(dto.getIsVibration()),
+                dto.getVolume(),
+                dto.getAlarmInterval()
+        );
+
+        return alarmRepository.save(alarm);
+    }
+
+    public void deleteAlarmForUser(String guardianName, String username, Long alarmId) {
+        Guardian guardian = guardianRepository.findByGuardianName(guardianName)
+                .orElseThrow(GuardianNotFoundException::new);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(UserNotFoundException::new);
+
+        // 보호자가 해당 노인을 관리하는지 확인
+        if (!guardian.getUsers().contains(user)) {
+            throw new UserNotManagedException();
+        }
+        alarmRepository.deleteById(alarmId);
     }
 }

@@ -16,7 +16,7 @@ public class Guardian {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long guardianId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String guardianName; // 로그인 아이디
 
     @Column(nullable = false)
