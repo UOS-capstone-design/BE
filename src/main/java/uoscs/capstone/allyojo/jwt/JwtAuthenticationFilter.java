@@ -15,11 +15,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
+import uoscs.capstone.allyojo.auth.GuardianDetails;
 import uoscs.capstone.allyojo.auth.PrincipalDetails;
+import uoscs.capstone.allyojo.dto.user.request.LoginRequestDTO;
 import uoscs.capstone.allyojo.entity.User;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 // /login 요청
@@ -32,18 +34,34 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
         log.info("로그인 진행 중 - JwtAuthenticationFilter - attemptAuthentication");
+        log.info("authenticationManager = {}", authenticationManager);
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            User user = mapper.readValue(request.getInputStream(), User.class);
+            String loginUrl = request.getRequestURI();
+            LoginRequestDTO loginRequestDTO = new ObjectMapper().readValue(request.getInputStream(), LoginRequestDTO.class);
             UsernamePasswordAuthenticationToken token =
-                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()); // 토큰 제작
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequestDTO.getUsername(),
+                            loginRequestDTO.getPassword()
+                    ); // 토큰 제작
 
-            // 인증 성공 시 authentication 리턴. 이 부분 예외 처리해야 하나?
-            Authentication authentication = authenticationManager.authenticate(token); // 토큰을 포함하여 인증 진행
-            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-            log.info("principalDetails: {}", principalDetails);
+            // URL에 따라 적절한 details 설정
+            if (request.getRequestURI().contains("/login/guardian")) {
+                token.setDetails(new WebAuthenticationDetails(request) {
+                    @Override
+                    public String toString() {
+                        return "GUARDIAN_LOGIN";
+                    }
+                });
+            } else {
+                token.setDetails(new WebAuthenticationDetails(request) {
+                    @Override
+                    public String toString() {
+                        return "USER_LOGIN";
+                    }
+                });
+            }
 
-            return authentication;
+            return authenticationManager.authenticate(token);
 
         } catch (IOException e) {
             throw new RuntimeException(e); // 추후 exceptionHandler 구현
@@ -57,15 +75,25 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult)
             throws IOException, ServletException {
-        PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
+        Object principal = authResult.getPrincipal();
+        String username = null;
+        String role = null;
+
+        if (principal instanceof PrincipalDetails) {
+            username = ((PrincipalDetails) principal).getUser().getUsername();
+            role = "ROLE_USER";
+        } else if (principal instanceof GuardianDetails) {
+            username = ((GuardianDetails) principal).getGuardian().getGuardianName();
+            role = "ROLE_GUARDIAN";
+        }
 
         // HMAC512 방식. 추후 RSA 변경 가능성
         String jwtToken = JWT.create()
                 .withSubject("JWT token")
                 .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
-                .withClaim("id", principalDetails.getUser().getUserId())
-                .withClaim("username", principalDetails.getUser().getUsername())
-                .withClaim("userGrade", principalDetails.getUser().getUserGrade().name())
+                .withClaim("username", username)
+                //.withClaim("userGrade", principalDetails.getUser().getUserGrade().name())
+                .withClaim("role", role)
                 .sign(Algorithm.HMAC512(JwtProperties.SECRET));
         log.info("로그인 성공 - JwtAuthenticationFilter - successfulAuthentication");
         log.info("jwtToken: {}", jwtToken);

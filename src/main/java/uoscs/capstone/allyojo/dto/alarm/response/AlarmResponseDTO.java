@@ -28,7 +28,6 @@ public class AlarmResponseDTO {
     public static AlarmResponseDTO fromAlarm(Alarm alarm) {
         return AlarmResponseDTO.builder()
                 .alarmId(alarm.getAlarmId())
-                .title(alarm.getTitle())
                 .alarmTime(alarm.getAlarmTime())
                 .active(alarm.getActive())
                 .alarmDays(alarm.getAlarmDays())

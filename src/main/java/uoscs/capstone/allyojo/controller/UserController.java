@@ -32,10 +32,10 @@ public class UserController {
         return ResponseEntity.ok(userJoinResponseDTO);
     }
 
-    @GetMapping("/{userid}")
-    @Operation(summary = "유저 조회", description = "유저 아이디를 받아와 해당 유저의 정보를 조회합니다.")
-    public ResponseEntity<UserResponseDTO> getUserByUserId(@PathVariable("userid") long userid) {
-        User user = userService.findById(userid);
+    @GetMapping("/{username}")
+    @Operation(summary = "유저 조회", description = "username을 받아와 해당 유저의 정보를 조회합니다.")
+    public ResponseEntity<UserResponseDTO> getUserByUsername(@PathVariable("username") String username) {
+        User user = userService.findByUsername(username);
         UserResponseDTO userResponseDTO = UserResponseDTO.fromUser(user);
 
         return ResponseEntity.ok(userResponseDTO);
@@ -47,6 +47,13 @@ public class UserController {
     public String test() {
         System.out.println("userService = " + userService);
         return "JWT 인증 성공.";
+    }
+
+    // 테스트용
+    @GetMapping("/testGuardian")
+    public String testGuardian() {
+        System.out.println("userService = " + userService);
+        return "보호자 권한 인증 성공.";
     }
 
     // 테스트용

@@ -35,28 +35,28 @@ public class TodoController {
         return ResponseEntity.ok(todoResponseDTO);
     }
 
-    @GetMapping("/{userId}/only_todo")
-    @Operation(summary = "투두 조회 (투두리스트만)", description = "해당 유저 아이디의 투두리스트 목록을 모두 가져옵니다. 알람은 제외됩니다. ")
-    public ResponseEntity<List<TodoResponseDTO>> getTodosByUserId(@PathVariable("userId") Long userId) {
+    @GetMapping("/{username}/only_todo")
+    @Operation(summary = "투두 조회 (투두리스트만)", description = "해당 username의 투두리스트 목록을 모두 가져옵니다. 알람은 제외됩니다. ")
+    public ResponseEntity<List<TodoResponseDTO>> getTodosByUsername(@PathVariable("username") String username) {
         List<TodoResponseDTO> todoResponseDTOs = todoService
-                .findAllTodoByUserId(userId)
+                .findAllTodoByUsername(username)
                 .stream()
                 .map(TodoResponseDTO::fromTodo)
                 .toList();
         return ResponseEntity.ok(todoResponseDTOs);
     }
 
-    @GetMapping("/{userId}")
-    @Operation(summary = "투두 조회 (알람 포함)", description = "해당 유저 아이디의 투두리스트와 미션이 수행되지 않은 알람 목록을 가져옵니다. ")
-    public ResponseEntity<TodoAndAlarmResponseDTO> getTodosAndConditionedAlarmsByUserId(@PathVariable("userId") Long userId) {
+    @GetMapping("/{username}")
+    @Operation(summary = "투두 조회 (알람 포함)", description = "해당 username의 투두리스트와 미션이 수행되지 않은 알람 목록을 가져옵니다. ")
+    public ResponseEntity<TodoAndAlarmResponseDTO> getTodosAndConditionedAlarmsByUsername(@PathVariable("username") String username) {
         List<TodoResponseDTO> todoResponseDTOs = todoService
-                .findAllTodoByUserId(userId)
+                .findAllTodoByUsername(username)
                 .stream()
                 .map(TodoResponseDTO::fromTodo)
                 .toList();
 
         List<AlarmResponseDTO> alarmResponseDTOs = alarmService
-                .findAlarmsByUserIdForTodo(userId)
+                .findAlarmsByUsernameForTodo(username)
                 .stream()
                 .map(AlarmResponseDTO::fromAlarm)
                 .toList();

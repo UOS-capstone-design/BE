@@ -12,6 +12,7 @@ import uoscs.capstone.allyojo.exception.alarm.AlarmNotFoundException;
 import uoscs.capstone.allyojo.exception.mission.MissionNotFoundException;
 import uoscs.capstone.allyojo.exception.user.UserNotFoundException;
 import uoscs.capstone.allyojo.repository.AlarmRepository;
+import uoscs.capstone.allyojo.repository.GuardianRepository;
 import uoscs.capstone.allyojo.repository.MissionRepository;
 import uoscs.capstone.allyojo.repository.UserRepository;
 
@@ -40,8 +41,7 @@ public class AlarmService {
                 .alarmId(dto.getAlarmId())
                 .user(user)
                 .mission(mission)
-                .title(dto.getTitle())
-                .alarmTime(dto.getTimer().toLocalTime())
+                .alarmTime(dto.getAlarmTime().toLocalTime())
                 .active(parseBoolean(dto.getActive()))
                 .alarmDays(dto.getAlarmDays())
                 .delayTimes(dto.getDelayTimes())
@@ -54,14 +54,14 @@ public class AlarmService {
         return alarmRepository.save(alarm);
     }
     // 알람 조회
-    public List<Alarm> findAllByUserId(Long userId) {
-          return alarmRepository.findAllByUserUserId(userId); // 빈 리스트 반환 가능.
+    public List<Alarm> findAllByUsername(String username) {
+          return alarmRepository.findAllByUserUsername(username); // 빈 리스트 반환 가능.
     }
 
     // 알려줘 탭 전용 알람 리턴 ( alarmDays != 0 and delayTimes >= 1)
     // TodoController에서 사용
-    public List<Alarm> findAlarmsByUserIdForTodo(Long userId) {
-        return alarmRepository.findAlarmsByUserIdForTodo(userId);
+    public List<Alarm> findAlarmsByUsernameForTodo(String username) {
+        return alarmRepository.findAlarmsByUsernameForTodo(username);
     }
 
     // 알람 수정
@@ -74,8 +74,7 @@ public class AlarmService {
                 .alarmId(alarm.getAlarmId())
                 .user(alarm.getUser()) // 기존 유저 유지
                 .mission(alarm.getMission()) // 기존 미션 유지
-                .title(dto.getTitle())
-                .alarmTime(dto.getTimer().toLocalTime())
+                .alarmTime(dto.getAlarmTime().toLocalTime())
                 .active(parseBoolean(dto.getActive()))
                 .alarmDays(dto.getAlarmDays())
                 .delayTimes(dto.getDelayTimes())

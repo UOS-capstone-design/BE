@@ -1,43 +1,26 @@
 package uoscs.capstone.allyojo.auth;
 
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
-
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import uoscs.capstone.allyojo.entity.User;
+import uoscs.capstone.allyojo.entity.Guardian;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Data
-public class PrincipalDetails implements UserDetails {
-
-    private User user;
-    public PrincipalDetails(User user) { // 생성자
-        this.user = user;
-    }
+@RequiredArgsConstructor
+public class GuardianDetails implements UserDetails {
+    private final Guardian guardian;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(() -> user.getUserGrade().name()); // enum -> String. 오류 체킹 필요
-        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-        return authorities;
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_GUARDIAN"));
     }
 
-    @Override
-    public String getPassword() {
-        return user.getPassword();
-    }
-
-    @Override
-    public String getUsername() {
-        return user.getUsername();
-    }
-
-    // 아이디 만료, 휴면 등등 체킹 X
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -56,5 +39,15 @@ public class PrincipalDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String getPassword() {
+        return guardian.getPassword();
+    }
+
+    @Override
+    public String getUsername() {
+        return guardian.getGuardianName();
     }
 }

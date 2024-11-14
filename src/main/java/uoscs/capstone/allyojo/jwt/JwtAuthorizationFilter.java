@@ -12,23 +12,30 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import uoscs.capstone.allyojo.auth.GuardianDetails;
 import uoscs.capstone.allyojo.auth.PrincipalDetails;
+import uoscs.capstone.allyojo.entity.Guardian;
 import uoscs.capstone.allyojo.entity.User;
 import uoscs.capstone.allyojo.exception.global.ErrorCode;
 import uoscs.capstone.allyojo.exception.global.JwtException;
 import uoscs.capstone.allyojo.exception.user.UserNotFoundException;
+import uoscs.capstone.allyojo.repository.GuardianRepository;
 import uoscs.capstone.allyojo.repository.UserRepository;
 
 import java.io.IOException;
+import java.util.Optional;
 
 // 권한 요청 시 실행
 @Slf4j
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
-    private UserRepository userRepository;
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
+    private UserRepository userRepository;
+    private GuardianRepository guardianRepository;
+
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository, GuardianRepository guardianRepository) {
         super(authenticationManager);
         this.userRepository = userRepository;
+        this.guardianRepository = guardianRepository;
     }
 
     // 헤더 Bearer가 아닌 경우 예외처리해야 함
@@ -50,41 +57,46 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         // prefix를 자르고 헤더 부분만 (Bearer 자름)
         String jwtToken = jwtHeader.substring(JwtProperties.TOKEN_PREFIX.length());
         String username = null;
+        String role = null;
         try {
-            // 서명 후 유저네임을 claim으로부터 가져옴
-              username = JWT
-                    .require(Algorithm.HMAC512(JwtProperties.SECRET))
+             username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET))
                     .build()
                     .verify(jwtToken)
                     .getClaim("username")
                     .asString();
-            log.info("JwtAuthorizationFilter" + "USERNAME: {}", username);
+            log.info("username = {}", username);
+
+             role = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET))
+                    .build()
+                    .verify(jwtToken)
+                    .getClaim("role")
+                    .asString();
+            log.info("role = {}", role);
+
         } catch (Exception e) {
             // jwt 서명 에러
             throw new JwtException(ErrorCode.JWT_SIGNATURE_ERROR);
             //throw new exception(exmessage.jwt.errorformat);
         }
 
-        // 유저네임이 널인 경우 예외처리해야 함.
-        // DB에서 username 조회 못하는 경우 예외처리
-        if (username != null) {
-            log.info("4. 서명이 정상적으로 완료되었습니다.");
-            log.info("DB로부터 username 조회, PrincipalDetails 객체 생성 후 Authentication 생성");
-            User userEntity = userRepository.findByUsername(username)
-                    .orElseThrow(() -> new UserNotFoundException());
-            // Authentication 객체 만들기
-            PrincipalDetails principalDetails = new PrincipalDetails(userEntity);
-            Authentication authentication =
-                    new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
-
-            // 시큐리티 세션에 Authentication 객체를 넣어줌
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            log.info("인증 성공" + " Authentication: {}", authentication);
-            chain.doFilter(request, response);
-
-        } else { // jwt 헤더가 없는 경우 -> 다음 필터로 이동
-            chain.doFilter(request, response);
-            log.info("jwt 헤더가 없습니다.");
+        // else 처리해야 함.
+        if (username != null && role != null) {
+            if ("ROLE_USER".equals(role)) {
+                Optional<User> user = userRepository.findByUsername(username);
+                user.ifPresent(u -> {
+                    PrincipalDetails principalDetails = new PrincipalDetails(u);
+                    Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                });
+            } else if ("ROLE_GUARDIAN".equals(role)) {
+                Optional<Guardian> guardian = guardianRepository.findByGuardianName(username);
+                guardian.ifPresent(g -> {
+                    GuardianDetails guardianDetails = new GuardianDetails(g);
+                    Authentication authentication = new UsernamePasswordAuthenticationToken(guardianDetails, null, guardianDetails.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                });
+            }
         }
+        chain.doFilter(request, response);
     }
 }

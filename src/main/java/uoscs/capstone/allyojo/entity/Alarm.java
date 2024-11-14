@@ -25,9 +25,6 @@ public class Alarm {
     @JoinColumn(name = "missionId", nullable = false)
     private Mission mission;
 
-    @Column(nullable = false) // 알람이름
-    private String title;
-
     @Column(nullable = false) // 알람시간: LocalTime
     private LocalTime alarmTime;
 
@@ -78,4 +75,25 @@ public class Alarm {
         return String.format("%07d", Integer.parseInt(Integer.toBinaryString(alarmDays)));
     }
 
+    public void update(
+            Mission mission,
+            LocalTime alarmTime,
+            Boolean active,
+            Integer alarmDays,
+            Integer delayTimes,
+            Boolean restrictAlarm,
+            Boolean isVibration,
+            Integer volume,
+            Integer alarmInterval
+    ) {
+        this.mission = mission;
+        this.alarmTime = alarmTime;
+        this.active = active;
+        this.alarmDays = alarmDays;
+        this.delayTimes = delayTimes;
+        this.restrictAlarm = restrictAlarm;
+        this.isVibration = isVibration;
+        this.volume = volume;
+        this.alarmInterval = alarmInterval;
+    }
 }

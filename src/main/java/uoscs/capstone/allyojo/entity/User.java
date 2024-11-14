@@ -16,7 +16,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true) // 유니크합니다
     private String username; // 로그인 아이디
 
     @Column(nullable = false)
@@ -32,8 +32,9 @@ public class User {
     @Column(nullable = false)
     private String phoneNumber;
 
-    @Column(nullable = false)
-    private String guardianPhoneNumber;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "guardianId")
+    private Guardian guardian;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Alarm> alarms;
@@ -48,13 +49,13 @@ public class User {
             String name,
             UserGrade userGrade,
             String phoneNumber,
-            String guardianPhoneNumber) {
+            Guardian guardian) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.userGrade = userGrade;
         this.phoneNumber = phoneNumber;
-        this.guardianPhoneNumber = guardianPhoneNumber;
+        this.guardian = guardian;
     }
 }
 

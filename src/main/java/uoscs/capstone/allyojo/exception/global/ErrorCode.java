@@ -8,12 +8,15 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorCode {
     // 에러이름(에러코드, 에러메시지)
-
     // Common
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal Server Error occurred."),
 
     // User
     USER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "해당 아이디의 유저가 없습니다."),
+
+    // Guardian
+    GUARDIAN_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "해당 아이디의 보호자가 없습니다."),
+    USER_NOT_MANAGED(HttpStatus.INTERNAL_SERVER_ERROR.value(), "해당 유저의 보호자로 등록되지 않았습니다."),
 
     // Mission
     MISSION_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "해당 아이디의 미션이 없습니다."),

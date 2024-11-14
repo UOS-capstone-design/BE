@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class ReportRequestDTO {
-    private Long userId;
+    private String username;
     private String missionName;
     private LocalDate startDate;
     private LocalDate endDate;

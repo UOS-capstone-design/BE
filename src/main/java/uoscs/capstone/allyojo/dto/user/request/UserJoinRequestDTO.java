@@ -22,7 +22,4 @@ public class UserJoinRequestDTO {
     @NotBlank(message = "전화번호를 입력하세요.")
     @Schema(example = "01012341234")
     private final String phoneNumber;
-
-    @Schema(example = "01012341234")
-    private final String guardianPhoneNumber;
 }

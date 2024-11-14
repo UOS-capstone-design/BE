@@ -42,15 +42,13 @@ public class VerificationService {
         Alarm alarm = alarmRepository.findById(dto.getAlarmId())
                 .orElseThrow(AlarmNotFoundException::new);
 
-        User user = userRepository.findById(dto.getUserId())
+        User user = userRepository.findByUsername(dto.getUsername())
                 .orElseThrow(UserNotFoundException::new);
 
         Verification verification = Verification.builder()
-                .verificationId(dto.getVerificationId())
                 .alarm(alarm)
                 .user(user)
                 .verificationDateTime(dto.getVerificationDateTime())
-                .result(dto.getResult())
                 .value(Optional.ofNullable(dto.getValue()).orElse(0.0)) // value 값이 0인 경우(혈압, 혈당이 아닌 경우) 0.0으로 저장.
                 .build();
 
@@ -68,8 +66,8 @@ public class VerificationService {
                 .orElseThrow(MissionNotFoundException::new);
 
         List<Verification> verifications = verificationRepository
-                .findByUserUserIdAndAlarmMissionMissionIdAndVerificationDateTimeBetween(
-                        dto.getUserId(),
+                .findByUserUsernameAndAlarmMissionMissionIdAndVerificationDateTimeBetween(
+                        dto.getUsername(),
                         mission.getMissionId(),
                         dto.getStartDate().atStartOfDay(),
                         dto.getEndDate().atTime(LocalTime.MAX)

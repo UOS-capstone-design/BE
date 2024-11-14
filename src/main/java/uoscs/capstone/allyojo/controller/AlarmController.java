@@ -32,11 +32,11 @@ public class AlarmController {
     }
 
     // 알람 조회
-    @GetMapping("/{userId}")
+    @GetMapping("/{username}")
     @Operation(summary = "알람 조회", description = "해당 유저 아이디의 알람 목록을 모두 가져옵니다.")
-    public ResponseEntity<List<AlarmResponseDTO>> getAlarmsByUserId(@PathVariable("userId") Long userId) {
+    public ResponseEntity<List<AlarmResponseDTO>> getAlarmsByUsername(@PathVariable("username") String username) {
         List<AlarmResponseDTO> alarmResponseDTOs = alarmService
-                .findAllByUserId(userId)
+                .findAllByUsername(username)
                 .stream()
                 .map(alarm -> AlarmResponseDTO.fromAlarm(alarm))
                 .toList();

@@ -17,7 +17,6 @@ public class VerificationResponseDTO {
     private Long alarmId;
     private Long userId;
     private LocalDateTime verificationDateTime;
-    private String result;
     private Double value;
 
     public static VerificationResponseDTO fromVerification(Verification verification) {
@@ -26,7 +25,6 @@ public class VerificationResponseDTO {
                 .alarmId(verification.getAlarm().getAlarmId())
                 .userId(verification.getUser().getUserId())
                 .verificationDateTime(verification.getVerificationDateTime())
-                .result(verification.getResult())
                 .value(verification.getValue())
                 .build();
     }
