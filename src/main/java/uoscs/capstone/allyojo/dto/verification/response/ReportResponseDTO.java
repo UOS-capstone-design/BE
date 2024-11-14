@@ -14,4 +14,5 @@ import java.util.List;
 public class ReportResponseDTO {
     private List<VerificationResponseDTO> verifications;
     private Double averageValue; // 기간 내 혈압/혈당의 평균값
+    private double successRatio;
 }
