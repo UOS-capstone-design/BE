@@ -21,8 +21,6 @@ import uoscs.capstone.allyojo.repository.MissionRepository;
 import uoscs.capstone.allyojo.repository.UserRepository;
 import uoscs.capstone.allyojo.repository.VerificationRepository;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -88,7 +86,10 @@ public class VerificationService {
                 .toList();
 
         return new ReportResponseDTO(verificationDTOs, averageValue);
+    }
 
-
+    public List<String> getDistinctMissionNamesByUsername(String username) {
+        log.info("username = {}", username);
+        return verificationRepository.findDistinctMissionNamesByUsername(username);
     }
 }

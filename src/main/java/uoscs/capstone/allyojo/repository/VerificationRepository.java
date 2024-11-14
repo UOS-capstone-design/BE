@@ -26,4 +26,7 @@ public interface VerificationRepository extends JpaRepository<Verification, Long
             LocalDateTime startDate,
             LocalDateTime endDate
     );
+
+    @Query("select distinct v.alarm.mission.missionName from Verification v where v.user.username = :username")
+    List<String> findDistinctMissionNamesByUsername(String username);
 }
