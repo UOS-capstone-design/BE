@@ -35,6 +35,15 @@ public class VerificationController {
         return ResponseEntity.ok(verificationResponseDTO);
     }
 
+    // 수행한 적 있는 미션 이름 조회
+    @GetMapping("/reports/{username}")
+    @Operation(summary = "미션 이름 조회", description = "유저 이름을 받아 그 유저가 수행한 적이 있는 미션 이름을 모아 제공합니다.")
+    public ResponseEntity<List<String>> getMissionNameByUsername(@PathVariable("username") String username) {
+        log.info("controller username = {}", username);
+        List<String> missionNames = verificationService.getDistinctMissionNamesByUsername(username);
+        return ResponseEntity.ok(missionNames);
+    }
+
     // 리포트 조회
     @PostMapping("/report")
     @Operation(summary = "리포트 조회", description = "주어진 날짜 사이에 포함된 검증 기록을 모아 제공합니다. (리포트 범위)")
@@ -42,4 +51,6 @@ public class VerificationController {
         ReportResponseDTO report = verificationService.getReport(reportRequestDTO);
         return ResponseEntity.ok(report);
     }
+
+
 }
