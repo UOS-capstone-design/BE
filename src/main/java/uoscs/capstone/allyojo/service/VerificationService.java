@@ -21,6 +21,8 @@ import uoscs.capstone.allyojo.repository.MissionRepository;
 import uoscs.capstone.allyojo.repository.UserRepository;
 import uoscs.capstone.allyojo.repository.VerificationRepository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -60,16 +62,36 @@ public class VerificationService {
 //
 //        return verificationRepository.findAllBetweenDate(startDateTime, endDateTime);
 
-        Mission mission = missionRepository.findByMissionName(dto.getMissionName())
+        String username = dto.getUsername();
+        String missionName = dto.getMissionName();
+        LocalDateTime startDate = dto.getStartDate().atStartOfDay();
+        LocalDateTime endDate = dto.getEndDate().atTime(LocalTime.MAX);
+
+
+        // 새로 추가한 부분: 알람을 가져와 성공률의 분모 구하기
+        List<Alarm> alarms = alarmRepository.findAllByUserUsernameAndMissionMissionName(username, missionName);
+        int totalTriggered = 0;
+        for (Alarm alarm : alarms) {
+            totalTriggered += calculateTriggeredAlarmCount(alarm, startDate, endDate);
+        }
+
+        Mission mission = missionRepository.findByMissionName(missionName)
                 .orElseThrow(MissionNotFoundException::new);
 
         List<Verification> verifications = verificationRepository
                 .findByUserUsernameAndAlarmMissionMissionIdAndVerificationDateTimeBetween(
-                        dto.getUsername(),
+                        username,
                         mission.getMissionId(),
-                        dto.getStartDate().atStartOfDay(),
-                        dto.getEndDate().atTime(LocalTime.MAX)
+                        startDate,
+                        endDate
                 );
+        // 분자 = verification rows
+        int successfulVerifications = verifications.size();
+        double successRatio = 0.0;
+
+        if (successfulVerifications > 0) {
+            successRatio = (double) successfulVerifications / (double) totalTriggered;
+        }
 
         // 평균 계산
         Double averageValue = null;
@@ -85,8 +107,25 @@ public class VerificationService {
                 .map(VerificationResponseDTO::fromVerification)
                 .toList();
 
-        return new ReportResponseDTO(verificationDTOs, averageValue);
+        return new ReportResponseDTO(verificationDTOs, averageValue, successRatio);
     }
+
+
+    // startDate, endDate 사이에 그 알람이 몇 번 발생해야 하는지 계산하는 메서드
+    private int calculateTriggeredAlarmCount(Alarm alarm, LocalDateTime startDate, LocalDateTime endDate) {
+        int count = 0;
+        LocalDateTime current = startDate;
+        log.info("현재 설정된 알람의 요일: {}", alarm.getAlarmDaysAsBinary());
+
+        while (current.isBefore(endDate) || current.isEqual(endDate)) {
+            if (alarm.isAlarmSetForDay((current.getDayOfWeek().getValue() - 1))) {
+                count++;
+            }
+            current = current.plusDays(1);
+        }
+        return count;
+    }
+
 
     public List<String> getDistinctMissionNamesByUsername(String username) {
         log.info("username = {}", username);
