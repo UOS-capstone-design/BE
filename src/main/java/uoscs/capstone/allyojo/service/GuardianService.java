@@ -6,12 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import uoscs.capstone.allyojo.dto.alarm.request.AlarmRequestDTO;
+import uoscs.capstone.allyojo.dto.guardian.request.AddUserToGuardianRequestDTO;
 import uoscs.capstone.allyojo.dto.guardian.request.GuardianJoinRequestDTO;
 import uoscs.capstone.allyojo.dto.guardian.request.UpdateUsersAlarmRequestDTO;
-import uoscs.capstone.allyojo.entity.Alarm;
-import uoscs.capstone.allyojo.entity.Guardian;
-import uoscs.capstone.allyojo.entity.Mission;
-import uoscs.capstone.allyojo.entity.User;
+import uoscs.capstone.allyojo.entity.*;
 import uoscs.capstone.allyojo.exception.alarm.AlarmNotFoundException;
 import uoscs.capstone.allyojo.exception.guardian.GuardianNotFoundException;
 import uoscs.capstone.allyojo.exception.guardian.UserNotManagedException;
@@ -36,6 +34,7 @@ public class GuardianService {
     private final UserRepository userRepository;
     private final MissionRepository missionRepository;
     private final AlarmRepository alarmRepository;
+    private final UserService userService;
 
     // 보호자 회원가입
     public Guardian joinGuardian(GuardianJoinRequestDTO guardianJoinRequestDTO) {
@@ -71,6 +70,29 @@ public class GuardianService {
 
         return guardianRepository.save(guardian);
 
+    }
+
+    // 보호자가 유저를 추가
+    public User addUserToGuardian(AddUserToGuardianRequestDTO dto) {
+        String guardianName = dto.getGuardianName();
+        String userPhoneNumber = dto.getUserPhoneNumber();
+
+        Guardian guardian = guardianRepository.findByGuardianName(guardianName)
+                .orElseThrow(GuardianNotFoundException::new);
+        User user = userRepository.findByPhoneNumber(userPhoneNumber)
+                .orElseThrow(UserNotFoundException::new);
+
+        User updateduser =
+                User.builder()
+                        .username(user.getUsername())
+                        .password(user.getPassword())
+                        .name(user.getName())
+                        .userGrade(UserGrade.BASIC)
+                        .phoneNumber(user.getPhoneNumber())
+                        .guardian(guardian)
+                        .build();
+
+        return userRepository.save(updateduser);
     }
 
     // 보호자가 관리하는 노인 리스트 조회

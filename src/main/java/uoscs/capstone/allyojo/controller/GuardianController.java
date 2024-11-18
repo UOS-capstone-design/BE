@@ -8,12 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uoscs.capstone.allyojo.dto.alarm.request.AlarmRequestDTO;
 import uoscs.capstone.allyojo.dto.alarm.response.AlarmResponseDTO;
+import uoscs.capstone.allyojo.dto.guardian.request.AddUserToGuardianRequestDTO;
 import uoscs.capstone.allyojo.dto.guardian.request.GuardianJoinRequestDTO;
 import uoscs.capstone.allyojo.dto.guardian.request.UpdateUsersAlarmRequestDTO;
 import uoscs.capstone.allyojo.dto.guardian.response.GuardianResponseDTO;
 import uoscs.capstone.allyojo.dto.user.response.UserResponseDTO;
 import uoscs.capstone.allyojo.entity.Alarm;
 import uoscs.capstone.allyojo.entity.Guardian;
+import uoscs.capstone.allyojo.entity.User;
 import uoscs.capstone.allyojo.service.GuardianService;
 
 import java.util.List;
@@ -32,6 +34,13 @@ public class GuardianController {
         Guardian guardian = guardianService.joinGuardian(guardianJoinRequestDTO);
         GuardianResponseDTO guardianResponseDTO = GuardianResponseDTO.fromGuardian(guardian);
         return ResponseEntity.ok(guardianResponseDTO);
+    }
+
+    @PostMapping("addUser")
+    @Operation(summary = "유저 추가", description = "보호자가 관리하는 유저를 추가합니다.")
+    public ResponseEntity<String> addUserToGuardian(@RequestBody AddUserToGuardianRequestDTO addUserToGuardianRequestDTO) {
+        User updatedUser = guardianService.addUserToGuardian(addUserToGuardianRequestDTO);
+        return ResponseEntity.ok("유저를 추가하였습니다. ");
     }
 
     @GetMapping("/{guardianName}/users")

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import uoscs.capstone.allyojo.dto.user.request.UserJoinRequestDTO;
+import uoscs.capstone.allyojo.entity.Guardian;
 import uoscs.capstone.allyojo.entity.User;
 import uoscs.capstone.allyojo.entity.UserGrade;
 import uoscs.capstone.allyojo.exception.user.UserNotFoundException;
