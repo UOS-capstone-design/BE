@@ -57,6 +57,10 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.guardian = guardian;
     }
+
+    public void addGuardian(Guardian guardian) {
+        this.guardian = guardian;
+    }
 }
 
 

@@ -36,7 +36,7 @@ public class GuardianController {
         return ResponseEntity.ok(guardianResponseDTO);
     }
 
-    @PostMapping("addUser")
+    @PutMapping("addUser")
     @Operation(summary = "유저 추가", description = "보호자가 관리하는 유저를 추가합니다.")
     public ResponseEntity<String> addUserToGuardian(@RequestBody AddUserToGuardianRequestDTO addUserToGuardianRequestDTO) {
         User updatedUser = guardianService.addUserToGuardian(addUserToGuardianRequestDTO);
