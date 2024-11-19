@@ -3,6 +3,7 @@ package uoscs.capstone.allyojo.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class Alarm {
     private Mission mission;
 
     @Column(nullable = false) // 알람시간: LocalTime
-    private LocalTime alarmTime;
+    private LocalDateTime alarmTime;
 
     @Column(nullable = false) // 알람활성여부
     private Boolean active;
@@ -82,7 +83,7 @@ public class Alarm {
 
     public void update(
             Mission mission,
-            LocalTime alarmTime,
+            LocalDateTime alarmTime,
             Boolean active,
             Integer alarmDays,
             Integer delayTimes,

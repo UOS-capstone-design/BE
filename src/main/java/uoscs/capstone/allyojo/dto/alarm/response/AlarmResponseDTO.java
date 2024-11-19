@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import uoscs.capstone.allyojo.entity.Alarm;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Data
@@ -14,7 +15,7 @@ import java.time.LocalTime;
 @Builder
 public class AlarmResponseDTO {
     private Long alarmId;
-    private LocalTime alarmTime;
+    private LocalDateTime alarmTime;
     private Boolean active;
     private Integer alarmDays;
     private Integer delayTimes;

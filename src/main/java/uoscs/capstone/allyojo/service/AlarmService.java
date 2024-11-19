@@ -41,7 +41,7 @@ public class AlarmService {
                 .alarmId(dto.getAlarmId())
                 .user(user)
                 .mission(mission)
-                .alarmTime(dto.getAlarmTime().toLocalTime())
+                .alarmTime(dto.getAlarmTime())
                 .active(parseBoolean(dto.getActive()))
                 .alarmDays(dto.getAlarmDays())
                 .delayTimes(dto.getDelayTimes())
@@ -75,7 +75,7 @@ public class AlarmService {
                 .alarmId(alarm.getAlarmId())
                 .user(alarm.getUser()) // 기존 유저 유지
                 .mission(alarm.getMission()) // 기존 미션 유지
-                .alarmTime(dto.getAlarmTime().toLocalTime())
+                .alarmTime(dto.getAlarmTime())
                 .active(parseBoolean(dto.getActive()))
                 .alarmDays(dto.getAlarmDays())
                 .delayTimes(dto.getDelayTimes())

@@ -113,7 +113,7 @@ public class GuardianService {
                 .alarmId(dto.getAlarmId())
                 .user(user)
                 .mission(mission)
-                .alarmTime(dto.getAlarmTime().toLocalTime())
+                .alarmTime(dto.getAlarmTime())
                 .active(parseBoolean(dto.getActive()))
                 .alarmDays(dto.getAlarmDays())
                 .delayTimes(dto.getDelayTimes())
@@ -160,7 +160,7 @@ public class GuardianService {
 
         alarm.update(
                 mission,
-                dto.getAlarmTime().toLocalTime(),
+                dto.getAlarmTime(),
                 Boolean.parseBoolean(dto.getActive()),
                 dto.getAlarmDays(),
                 dto.getDelayTimes(),
