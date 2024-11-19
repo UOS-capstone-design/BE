@@ -52,6 +52,11 @@ public class Alarm {
     @OneToMany(mappedBy = "alarm", fetch = FetchType.LAZY)
     private List<Verification> verifications;
 
+    // 보호자로부터 생성
+    @Column(nullable = false)
+    private Boolean createdByGuardian = false;
+
+
     //// 알람요일 관련 메서드
     // 요일별 알람 비트를 체크하는 메서드
     public boolean isAlarmSetForDay(int dayIndex) {
@@ -84,7 +89,8 @@ public class Alarm {
             Boolean restrictAlarm,
             Boolean isVibration,
             Integer volume,
-            Integer alarmInterval
+            Integer alarmInterval,
+            Boolean createdByGuardian
     ) {
         this.mission = mission;
         this.alarmTime = alarmTime;
@@ -95,5 +101,6 @@ public class Alarm {
         this.isVibration = isVibration;
         this.volume = volume;
         this.alarmInterval = alarmInterval;
+        this.createdByGuardian = createdByGuardian;
     }
 }

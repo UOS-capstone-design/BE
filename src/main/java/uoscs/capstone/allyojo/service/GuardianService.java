@@ -121,6 +121,7 @@ public class GuardianService {
                 .isVibration(parseBoolean(dto.getIsVibration()))
                 .volume(dto.getVolume())
                 .alarmInterval(dto.getAlarmInterval())
+                .createdByGuardian(true)
                 .build();
 
         return alarmRepository.save(alarm);
@@ -137,7 +138,7 @@ public class GuardianService {
             throw new UserNotManagedException();
         }
 
-        return alarmRepository.findAllByUserUsername(username);
+        return alarmRepository.findAllByUserUsernameAndCreatedByGuardian(username);
     }
 
     // 보호자가 관리하는 노인의 알람 수정
@@ -166,7 +167,8 @@ public class GuardianService {
                 Boolean.parseBoolean(dto.getRestrictAlarm()),
                 Boolean.parseBoolean(dto.getIsVibration()),
                 dto.getVolume(),
-                dto.getAlarmInterval()
+                dto.getAlarmInterval(),
+                true
         );
 
         return alarmRepository.save(alarm);

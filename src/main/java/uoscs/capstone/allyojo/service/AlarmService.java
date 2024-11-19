@@ -49,6 +49,7 @@ public class AlarmService {
                 .isVibration(parseBoolean(dto.getIsVibration()))
                 .volume(dto.getVolume())
                 .alarmInterval(dto.getAlarmInterval())
+                .createdByGuardian(false)
                 .build();
 
         return alarmRepository.save(alarm);
@@ -82,6 +83,7 @@ public class AlarmService {
                 .isVibration(parseBoolean(dto.getIsVibration()))
                 .volume(dto.getVolume())
                 .alarmInterval(dto.getAlarmInterval())
+                .createdByGuardian(false)
                 .build();
 
         return alarmRepository.save(alarm);

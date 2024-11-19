@@ -22,6 +22,7 @@ public class AlarmResponseDTO {
     private Boolean isVibration;
     private Integer volume;
     private Integer alarmInterval;
+    private Boolean createdByGuardian;
 
     // 엔티티로부터 ResponseDTO 생성
     public static AlarmResponseDTO fromAlarm(Alarm alarm) {
@@ -35,6 +36,7 @@ public class AlarmResponseDTO {
                 .isVibration(alarm.getIsVibration())
                 .volume(alarm.getVolume())
                 .alarmInterval(alarm.getAlarmInterval())
+                .createdByGuardian(alarm.getCreatedByGuardian())
                 .build();
     }
 }
