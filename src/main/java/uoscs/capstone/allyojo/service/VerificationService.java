@@ -50,6 +50,7 @@ public class VerificationService {
                 .user(user)
                 .verificationDateTime(dto.getVerificationDateTime())
                 .value(Optional.ofNullable(dto.getValue()).orElse(0.0)) // value 값이 0인 경우(혈압, 혈당이 아닌 경우) 0.0으로 저장.
+                .result(dto.getResult())
                 .build();
 
         return verificationRepository.save(verification);
@@ -70,11 +71,6 @@ public class VerificationService {
 
         // 새로 추가한 부분: 알람을 가져와 성공률의 분모 구하기
         List<Alarm> alarms = alarmRepository.findAllByUserUsernameAndMissionMissionName(username, missionName);
-        int totalTriggered = 0;
-        for (Alarm alarm : alarms) {
-            totalTriggered += calculateTriggeredAlarmCount(alarm, startDate, endDate);
-        }
-
         Mission mission = missionRepository.findByMissionName(missionName)
                 .orElseThrow(MissionNotFoundException::new);
 
@@ -85,13 +81,25 @@ public class VerificationService {
                         startDate,
                         endDate
                 );
-        // 분자 = verification rows
-        int successfulVerifications = verifications.size();
-        double successRatio = 0.0;
+        // success ratio v1
+//
+//        int totalTriggered = 0;
+//        for (Alarm alarm : alarms) {
+//            totalTriggered += calculateTriggeredAlarmCount(alarm, startDate, endDate);
+//        }
+//
+//        // 분자 = verification rows
+//        int successfulVerifications = verifications.size();
+//        double successRatio = 0.0;
+//
+//        if (successfulVerifications > 0) {
+//            successRatio = (double) successfulVerifications / (double) totalTriggered;
+//        }
 
-        if (successfulVerifications > 0) {
-            successRatio = (double) successfulVerifications / (double) totalTriggered;
-        }
+        int denominator = verifications.size();
+        int numerator = countTrueVerification(username, mission.getMissionId(), startDate, endDate);
+        double successRatio = (double) numerator / (double) denominator;
+
 
         // 평균 계산
         Double averageValue = null;
@@ -130,5 +138,9 @@ public class VerificationService {
     public List<String> getDistinctMissionNamesByUsername(String username) {
         log.info("username = {}", username);
         return verificationRepository.findDistinctMissionNamesByUsername(username);
+    }
+
+    public int countTrueVerification(String username, Long missionId, LocalDateTime startDate, LocalDateTime endDate) {
+        return verificationRepository.countTrueByUserAndAlarmMissionMissionId(username, missionId, startDate, endDate);
     }
 }

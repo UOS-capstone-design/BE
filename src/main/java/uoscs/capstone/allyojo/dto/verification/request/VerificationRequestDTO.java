@@ -16,4 +16,5 @@ public class VerificationRequestDTO {
     private String username;
     private LocalDateTime verificationDateTime;
     private Double value;
+    private Boolean result;
 }
