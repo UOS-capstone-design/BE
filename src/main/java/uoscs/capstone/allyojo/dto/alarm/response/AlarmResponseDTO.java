@@ -16,6 +16,7 @@ import java.time.LocalTime;
 public class AlarmResponseDTO {
     private Long alarmId;
     private LocalDateTime alarmTime;
+    private String missionName;
     private Boolean active;
     private Integer alarmDays;
     private Integer delayTimes;
@@ -30,6 +31,7 @@ public class AlarmResponseDTO {
         return AlarmResponseDTO.builder()
                 .alarmId(alarm.getAlarmId())
                 .alarmTime(alarm.getAlarmTime())
+                .missionName(alarm.getMission().getMissionName())
                 .active(alarm.getActive())
                 .alarmDays(alarm.getAlarmDays())
                 .delayTimes(alarm.getDelayTimes())
