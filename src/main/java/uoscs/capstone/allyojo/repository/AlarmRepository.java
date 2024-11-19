@@ -18,4 +18,7 @@ public interface AlarmRepository extends JpaRepository<Alarm, Long> {
 
     @Query("select a from Alarm a where a.user.username = :username and a.alarmDays <> 0 and a.delayTimes >= 1")
     List<Alarm> findAlarmsByUsernameForTodo(@Param("username") String username);
+
+    @Query("select a from Alarm a where a.user.username = :username and a.createdByGuardian = true")
+    List<Alarm> findAllByUserUsernameAndCreatedByGuardian(@Param("username") String username);
 }

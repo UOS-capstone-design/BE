@@ -113,7 +113,7 @@ public class GuardianService {
                 .alarmId(dto.getAlarmId())
                 .user(user)
                 .mission(mission)
-                .alarmTime(dto.getAlarmTime().toLocalTime())
+                .alarmTime(dto.getAlarmTime())
                 .active(parseBoolean(dto.getActive()))
                 .alarmDays(dto.getAlarmDays())
                 .delayTimes(dto.getDelayTimes())
@@ -121,6 +121,7 @@ public class GuardianService {
                 .isVibration(parseBoolean(dto.getIsVibration()))
                 .volume(dto.getVolume())
                 .alarmInterval(dto.getAlarmInterval())
+                .createdByGuardian(true)
                 .build();
 
         return alarmRepository.save(alarm);
@@ -137,7 +138,7 @@ public class GuardianService {
             throw new UserNotManagedException();
         }
 
-        return alarmRepository.findAllByUserUsername(username);
+        return alarmRepository.findAllByUserUsernameAndCreatedByGuardian(username);
     }
 
     // 보호자가 관리하는 노인의 알람 수정
@@ -159,14 +160,15 @@ public class GuardianService {
 
         alarm.update(
                 mission,
-                dto.getAlarmTime().toLocalTime(),
+                dto.getAlarmTime(),
                 Boolean.parseBoolean(dto.getActive()),
                 dto.getAlarmDays(),
                 dto.getDelayTimes(),
                 Boolean.parseBoolean(dto.getRestrictAlarm()),
                 Boolean.parseBoolean(dto.getIsVibration()),
                 dto.getVolume(),
-                dto.getAlarmInterval()
+                dto.getAlarmInterval(),
+                true
         );
 
         return alarmRepository.save(alarm);

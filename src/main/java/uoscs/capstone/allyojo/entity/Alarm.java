@@ -3,6 +3,7 @@ package uoscs.capstone.allyojo.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class Alarm {
     private Mission mission;
 
     @Column(nullable = false) // 알람시간: LocalTime
-    private LocalTime alarmTime;
+    private LocalDateTime alarmTime;
 
     @Column(nullable = false) // 알람활성여부
     private Boolean active;
@@ -51,6 +52,11 @@ public class Alarm {
 
     @OneToMany(mappedBy = "alarm", fetch = FetchType.LAZY)
     private List<Verification> verifications;
+
+    // 보호자로부터 생성
+    @Column(nullable = false)
+    private Boolean createdByGuardian = false;
+
 
     //// 알람요일 관련 메서드
     // 요일별 알람 비트를 체크하는 메서드
@@ -77,14 +83,15 @@ public class Alarm {
 
     public void update(
             Mission mission,
-            LocalTime alarmTime,
+            LocalDateTime alarmTime,
             Boolean active,
             Integer alarmDays,
             Integer delayTimes,
             Boolean restrictAlarm,
             Boolean isVibration,
             Integer volume,
-            Integer alarmInterval
+            Integer alarmInterval,
+            Boolean createdByGuardian
     ) {
         this.mission = mission;
         this.alarmTime = alarmTime;
@@ -95,5 +102,6 @@ public class Alarm {
         this.isVibration = isVibration;
         this.volume = volume;
         this.alarmInterval = alarmInterval;
+        this.createdByGuardian = createdByGuardian;
     }
 }

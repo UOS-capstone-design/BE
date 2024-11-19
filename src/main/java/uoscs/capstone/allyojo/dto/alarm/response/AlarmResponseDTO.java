@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import uoscs.capstone.allyojo.entity.Alarm;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Data
@@ -14,7 +15,7 @@ import java.time.LocalTime;
 @Builder
 public class AlarmResponseDTO {
     private Long alarmId;
-    private LocalTime alarmTime;
+    private LocalDateTime alarmTime;
     private Boolean active;
     private Integer alarmDays;
     private Integer delayTimes;
@@ -22,6 +23,7 @@ public class AlarmResponseDTO {
     private Boolean isVibration;
     private Integer volume;
     private Integer alarmInterval;
+    private Boolean createdByGuardian;
 
     // 엔티티로부터 ResponseDTO 생성
     public static AlarmResponseDTO fromAlarm(Alarm alarm) {
@@ -35,6 +37,7 @@ public class AlarmResponseDTO {
                 .isVibration(alarm.getIsVibration())
                 .volume(alarm.getVolume())
                 .alarmInterval(alarm.getAlarmInterval())
+                .createdByGuardian(alarm.getCreatedByGuardian())
                 .build();
     }
 }
