@@ -14,7 +14,6 @@ import java.time.LocalTime;
 @Builder
 public class AlarmResponseDTO {
     private Long alarmId;
-    private String title;
     private LocalTime alarmTime;
     private Boolean active;
     private Integer alarmDays;

@@ -82,17 +82,9 @@ public class GuardianService {
         User user = userRepository.findByPhoneNumber(userPhoneNumber)
                 .orElseThrow(UserNotFoundException::new);
 
-        User updateduser =
-                User.builder()
-                        .username(user.getUsername())
-                        .password(user.getPassword())
-                        .name(user.getName())
-                        .userGrade(UserGrade.BASIC)
-                        .phoneNumber(user.getPhoneNumber())
-                        .guardian(guardian)
-                        .build();
+        user.addGuardian(guardian);
 
-        return userRepository.save(updateduser);
+        return userRepository.save(user);
     }
 
     // 보호자가 관리하는 노인 리스트 조회
@@ -167,7 +159,7 @@ public class GuardianService {
 
         alarm.update(
                 mission,
-                dto.getAlarmTime(),
+                dto.getAlarmTime().toLocalTime(),
                 Boolean.parseBoolean(dto.getActive()),
                 dto.getAlarmDays(),
                 dto.getDelayTimes(),

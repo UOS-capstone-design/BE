@@ -31,4 +31,6 @@ public class Verification {
 
     @Column(nullable = true) // nullable. 측정 값이 없는 경우
     private Double value;
+
+    private Boolean result;
 }
