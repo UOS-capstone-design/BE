@@ -39,6 +39,18 @@ public interface VerificationRepository extends JpaRepository<Verification, Long
             @Param("endDate") LocalDateTime endDate
     );
 
+    @Query("SELECT COUNT(v) FROM Verification v " +
+            "WHERE v.user.username = :username " +
+            "AND v.alarm.mission.missionId = :missionId " +
+            "AND v.verificationDateTime BETWEEN :startDate AND :endDate " +
+            "AND v.result = false")
+    int countFalseByUserAndAlarmMissionMissionId(
+            @Param("username") String username,
+            @Param("missionId") Long missionId,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
+    );
+
     @Query("select distinct v.alarm.mission.missionName from Verification v where v.user.username = :username")
     List<String> findDistinctMissionNamesByUsername(String username);
 

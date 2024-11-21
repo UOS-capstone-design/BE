@@ -96,7 +96,8 @@ public class VerificationService {
 //            successRatio = (double) successfulVerifications / (double) totalTriggered;
 //        }
 
-        int denominator = verifications.size();
+        //int denominator = verifications.size();
+        int denominator = countFalseVerification(username, mission.getMissionId(), startDate, endDate);
         int numerator = countTrueVerification(username, mission.getMissionId(), startDate, endDate);
         double successRatio = (double) numerator / (double) denominator;
 
@@ -143,4 +144,9 @@ public class VerificationService {
     public int countTrueVerification(String username, Long missionId, LocalDateTime startDate, LocalDateTime endDate) {
         return verificationRepository.countTrueByUserAndAlarmMissionMissionId(username, missionId, startDate, endDate);
     }
+
+    public int countFalseVerification(String username, Long missionId, LocalDateTime startDate, LocalDateTime endDate) {
+        return verificationRepository.countFalseByUserAndAlarmMissionMissionId(username, missionId, startDate, endDate);
+    }
+
 }
