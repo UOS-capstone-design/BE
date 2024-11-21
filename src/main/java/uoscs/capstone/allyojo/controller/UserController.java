@@ -12,7 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import uoscs.capstone.allyojo.dto.user.request.UserJoinRequestDTO;
 import uoscs.capstone.allyojo.dto.user.response.UserResponseDTO;
 import uoscs.capstone.allyojo.entity.User;
+import uoscs.capstone.allyojo.repository.UserRepository;
 import uoscs.capstone.allyojo.service.UserService;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -21,6 +25,7 @@ import uoscs.capstone.allyojo.service.UserService;
 @Tag(name = "유저")
 public class UserController {
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @PostMapping("/join")
     @Operation(summary = "회원가입", description = "회원가입합니다.")
@@ -40,6 +45,18 @@ public class UserController {
 
         return ResponseEntity.ok(userResponseDTO);
 
+    }
+
+    // 유저네임 중복 확인
+    @GetMapping("/{username}/check")
+    @Operation(summary = "유저네임 중복 확인", description = "DB에 해당 유저네임이 있는지 조회하여 회원가입이 가능한지 리턴합니다.")
+    public ResponseEntity<Map<String, Boolean>> checkUsernameDuplicate(@PathVariable String username) {
+        boolean isDuplicate = userRepository.existsByUsername(username);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("isDuplicate", isDuplicate);
+
+        return ResponseEntity.ok(response);
     }
 
     // 테스트용

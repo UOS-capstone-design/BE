@@ -69,7 +69,11 @@ public class GuardianService {
         }
 
         return guardianRepository.save(guardian);
+    }
 
+    // guardianName 중복체크
+    public boolean isGuardianNameDuplicate(String guardianName) {
+        return guardianRepository.existsByGuardianName(guardianName);
     }
 
     // 보호자가 유저를 추가
