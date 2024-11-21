@@ -21,4 +21,8 @@ public interface AlarmRepository extends JpaRepository<Alarm, Long> {
 
     @Query("select a from Alarm a where a.user.username = :username and a.createdByGuardian = true")
     List<Alarm> findAllByUserUsernameAndCreatedByGuardian(@Param("username") String username);
+
+    @Query("select a from Alarm a where a.user.guardian.guardianName = :guardianName and a.createdByGuardian = true")
+    List<Alarm> findAllByGuardianName(@Param("guardianName") String guardianName);
+
 }

@@ -11,6 +11,7 @@ import uoscs.capstone.allyojo.dto.alarm.response.AlarmResponseDTO;
 import uoscs.capstone.allyojo.dto.guardian.request.AddUserToGuardianRequestDTO;
 import uoscs.capstone.allyojo.dto.guardian.request.GuardianJoinRequestDTO;
 import uoscs.capstone.allyojo.dto.guardian.request.UpdateUsersAlarmRequestDTO;
+import uoscs.capstone.allyojo.dto.guardian.response.AlarmContainUserinfoResponseDTO;
 import uoscs.capstone.allyojo.dto.guardian.response.GuardianResponseDTO;
 import uoscs.capstone.allyojo.dto.user.response.UserResponseDTO;
 import uoscs.capstone.allyojo.entity.Alarm;
@@ -66,8 +67,20 @@ public class GuardianController {
         return ResponseEntity.ok(alarmResponseDTO);
     }
 
+    @GetMapping("{guardianName}/alarms")
+    @Operation(summary = "보호자가 관리하는 모든 유저의 모든 알람 조회", description = "보호자가 관리하는 모든 유저의 모든 알람을 가져옵니다. 단, 보호자가 생성한 것만 가져옵니다.")
+    public ResponseEntity<List<AlarmContainUserinfoResponseDTO>> getAllAlarmsContainUserInfo(@PathVariable String guardianName) {
+        List<AlarmContainUserinfoResponseDTO> alarms = guardianService
+                .getAlarmsByGuardian(guardianName)
+                .stream()
+                .map(AlarmContainUserinfoResponseDTO::fromAlarm)
+                .toList();
+
+        return ResponseEntity.ok(alarms);
+    }
+
     @GetMapping("/{guardianName}/user/{username}/alarms")
-    @Operation(summary = "보호자가 관리하는 유저 알람 조회", description = "보호자가 관리하는 유저의 모든 알람을 가져옵니다.")
+    @Operation(summary = "보호자가 관리하는 유저 한 명 알람 조회", description = "보호자가 관리하는 유저 한 명의 모든 알람을 가져옵니다.")
     public ResponseEntity<List<AlarmResponseDTO>> getAlarms(
             @PathVariable String guardianName,
             @PathVariable String username) {

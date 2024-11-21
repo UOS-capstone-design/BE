@@ -127,7 +127,12 @@ public class GuardianService {
         return alarmRepository.save(alarm);
     }
 
-    // 보호자가 관리하는 노인의 알람 조회
+    // 보호자가 관리하는 모든 노인의 알람 조회
+    public List<Alarm> getAlarmsByGuardian(String guardianName) {
+        return alarmRepository.findAllByGuardianName(guardianName);
+    }
+
+    // 보호자가 관리하는 노인의 알람 조회(보호자이름, 유저이름)
     public List<Alarm> getAlarmsForUser(String guardianName, String username) {
         Guardian guardian = guardianRepository.findByGuardianName(guardianName)
                 .orElseThrow(GuardianNotFoundException::new);
