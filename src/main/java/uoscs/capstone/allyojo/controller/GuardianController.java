@@ -17,9 +17,12 @@ import uoscs.capstone.allyojo.dto.user.response.UserResponseDTO;
 import uoscs.capstone.allyojo.entity.Alarm;
 import uoscs.capstone.allyojo.entity.Guardian;
 import uoscs.capstone.allyojo.entity.User;
+import uoscs.capstone.allyojo.repository.GuardianRepository;
 import uoscs.capstone.allyojo.service.GuardianService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -28,6 +31,7 @@ import java.util.List;
 @Tag(name = "보호자")
 public class GuardianController {
     private final GuardianService guardianService;
+    private final GuardianRepository guardianRepository;
 
     @PostMapping("/join")
     @Operation(summary = "보호자 회원가입", description = "보호자 회원가입합니다.")
@@ -37,7 +41,20 @@ public class GuardianController {
         return ResponseEntity.ok(guardianResponseDTO);
     }
 
-    @PutMapping("addUser")
+    // guardianName 중복 체크
+    @GetMapping("/{guardianName}/check")
+    @Operation(summary = "보호자이름 중복확인", description = "DB에 해당 보호자이름이 있는지 조회하여 회원가입이 가능한지 리턴합니다.")
+    public ResponseEntity<Map<String, Boolean>> checkGuardianNameDuplicate(@PathVariable String guardianName) {
+        boolean isDuplicate = guardianRepository.existsByGuardianName(guardianName);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("isDuplicate", isDuplicate);
+
+        return ResponseEntity.ok(response);
+    }
+
+
+    @PutMapping("/addUser")
     @Operation(summary = "유저 추가", description = "보호자가 관리하는 유저를 추가합니다.")
     public ResponseEntity<String> addUserToGuardian(@RequestBody AddUserToGuardianRequestDTO addUserToGuardianRequestDTO) {
         User updatedUser = guardianService.addUserToGuardian(addUserToGuardianRequestDTO);

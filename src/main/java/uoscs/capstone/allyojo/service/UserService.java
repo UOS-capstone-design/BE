@@ -44,5 +44,10 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException());
     }
 
+    // username 중복 체크
+    public boolean isUsernameDuplicate(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
 
 }
