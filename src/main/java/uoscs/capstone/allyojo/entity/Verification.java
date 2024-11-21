@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -33,4 +34,7 @@ public class Verification {
     private Double value;
 
     private Boolean result;
+
+    @OneToMany(mappedBy = "verification", fetch = FetchType.LAZY)
+    private List<Nutrient> nutrients;
 }
