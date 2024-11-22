@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import uoscs.capstone.allyojo.dto.user.request.UserJoinRequestDTO;
+import uoscs.capstone.allyojo.entity.Gender;
 import uoscs.capstone.allyojo.entity.Guardian;
 import uoscs.capstone.allyojo.entity.User;
 import uoscs.capstone.allyojo.entity.UserGrade;
@@ -24,7 +25,6 @@ public class UserService {
     public User joinUser(UserJoinRequestDTO userJoinRequestDTO) {
         // 비밀번호 인코딩
         String encodedPassword = bCryptPasswordEncoder.encode(userJoinRequestDTO.getPassword());
-
         User user =
                 User.builder()
                         .username(userJoinRequestDTO.getUsername())
@@ -32,6 +32,8 @@ public class UserService {
                         .name(userJoinRequestDTO.getName())
                         .userGrade(UserGrade.BASIC)
                         .phoneNumber(userJoinRequestDTO.getPhoneNumber())
+                        .age(userJoinRequestDTO.getAge())
+                        .gender(Gender.valueOf(userJoinRequestDTO.getGender()))
                         .build();
 
         return userRepository.save(user);
@@ -48,6 +50,4 @@ public class UserService {
     public boolean isUsernameDuplicate(String username) {
         return userRepository.existsByUsername(username);
     }
-
-
 }

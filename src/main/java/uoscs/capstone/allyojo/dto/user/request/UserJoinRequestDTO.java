@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import uoscs.capstone.allyojo.entity.Gender;
 import uoscs.capstone.allyojo.entity.UserGrade;
 
 
@@ -22,4 +23,7 @@ public class UserJoinRequestDTO {
     @NotBlank(message = "전화번호를 입력하세요.")
     @Schema(example = "01012341234")
     private final String phoneNumber;
+
+    private final Integer age;
+    private final String gender;
 }
