@@ -25,25 +25,25 @@
 //    private void createDummyMission() {
 //        Mission mission1 =
 //                Mission.builder()
-//                        .missionName("약복용")
+//                        .missionName("Eat Medician")
 //                        .description("약")
 //                        .build();
 //
 //        Mission mission2 =
 //                Mission.builder()
-//                        .missionName("식사관리")
-//                        .description("밥")
+//                        .missionName("Eat food")
+//                        .description("")
 //                        .build();
 //
 //        Mission mission3 =
 //                Mission.builder()
-//                        .missionName("혈압관리")
+//                        .missionName("Manage blood pressure")
 //                        .description("혈압")
 //                        .build();
 //
 //        Mission mission4 =
 //                Mission.builder()
-//                        .missionName("혈당관리")
+//                        .missionName("Manage blood sugar")
 //                        .description("혈당")
 //                        .build();
 //
