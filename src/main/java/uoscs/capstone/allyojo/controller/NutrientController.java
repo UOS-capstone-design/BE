@@ -9,14 +9,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import uoscs.capstone.allyojo.dto.nutrient.request.FoodReportRequestDTO;
 import uoscs.capstone.allyojo.dto.nutrient.request.NutrientVerificationRequestDTO;
+import uoscs.capstone.allyojo.dto.nutrient.response.FoodReportResponseDTO;
 import uoscs.capstone.allyojo.dto.nutrient.response.NutrientVerificationResponseDTO;
 import uoscs.capstone.allyojo.service.NutrientService;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/meal")
+@RequestMapping("/food")
 @Tag(name = "식사 관리")
 public class NutrientController {
     private final NutrientService nutrientService;
@@ -25,6 +27,13 @@ public class NutrientController {
     @Operation(summary = "식사 관리 검증 저장", description = "식사 미션에 대한 검증 항목을 저장합니다.")
     public ResponseEntity<NutrientVerificationResponseDTO> addMealVerification(@RequestBody NutrientVerificationRequestDTO dto) {
         NutrientVerificationResponseDTO responseDTO = nutrientService.addFoodVerification(dto);
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    @PostMapping("/report")
+    @Operation(summary = "식사 관리 리포트 조회", description = "일단위로 식사 관리 리포트를 조회합니다.")
+    public ResponseEntity<FoodReportResponseDTO> getFoodReport(@RequestBody FoodReportRequestDTO dto) {
+        FoodReportResponseDTO responseDTO = nutrientService.getFoodReport(dto);
         return ResponseEntity.ok(responseDTO);
     }
 }
