@@ -14,6 +14,9 @@ public interface AlarmRepository extends JpaRepository<Alarm, Long> {
 
     List<Alarm> findAllByUserUsername(String username);
 
+    // 활성화된 알람만 가져옴
+    List<Alarm> findAllByUserUsernameAndDisabledIsFalse(String username);
+
     List<Alarm> findAllByUserUsernameAndMissionMissionName(String username, String missionName);
 
     @Query("select a from Alarm a where a.user.username = :username and a.alarmDays <> 0 and a.delayTimes >= 1")

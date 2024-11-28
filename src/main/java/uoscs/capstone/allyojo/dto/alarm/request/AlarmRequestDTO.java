@@ -1,5 +1,6 @@
 package uoscs.capstone.allyojo.dto.alarm.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +17,7 @@ public class AlarmRequestDTO {
     private String username; // findUserIdByUsername
     private String missionName; // findMissionIdByMissionName
     private LocalDateTime alarmTime;
+    private String title;
     private String active; // 알람 활성 여부, "true / false"
     private Integer alarmDays; // 요일
     private Integer delayTimes;
@@ -23,6 +25,8 @@ public class AlarmRequestDTO {
     private String isVibration; // 위와 마찬가지
     private Integer volume;
     private Integer alarmInterval;
+    @Schema(example = "false")
+    private Boolean disabled;
 }
 
 

@@ -118,6 +118,7 @@ public class GuardianService {
                 .user(user)
                 .mission(mission)
                 .alarmTime(dto.getAlarmTime())
+                .title(dto.getTitle())
                 .active(parseBoolean(dto.getActive()))
                 .alarmDays(dto.getAlarmDays())
                 .delayTimes(dto.getDelayTimes())
@@ -126,6 +127,7 @@ public class GuardianService {
                 .volume(dto.getVolume())
                 .alarmInterval(dto.getAlarmInterval())
                 .createdByGuardian(true)
+                .disabled(false)
                 .build();
 
         return alarmRepository.save(alarm);
@@ -170,6 +172,7 @@ public class GuardianService {
         alarm.update(
                 mission,
                 dto.getAlarmTime(),
+                dto.getTitle(),
                 Boolean.parseBoolean(dto.getActive()),
                 dto.getAlarmDays(),
                 dto.getDelayTimes(),
@@ -177,7 +180,8 @@ public class GuardianService {
                 Boolean.parseBoolean(dto.getIsVibration()),
                 dto.getVolume(),
                 dto.getAlarmInterval(),
-                true
+                true,
+                dto.getDisabled()
         );
 
         return alarmRepository.save(alarm);
