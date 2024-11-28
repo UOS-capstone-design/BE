@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uoscs.capstone.allyojo.dto.verification.request.ReportRequestDTO;
 import uoscs.capstone.allyojo.dto.verification.request.VerificationRequestDTO;
+import uoscs.capstone.allyojo.dto.verification.response.BloodPressureReportResponseDTO;
 import uoscs.capstone.allyojo.dto.verification.response.ReportResponseDTO;
 import uoscs.capstone.allyojo.dto.verification.response.VerificationResponseDTO;
 import uoscs.capstone.allyojo.entity.Alarm;
@@ -21,7 +22,6 @@ import uoscs.capstone.allyojo.repository.MissionRepository;
 import uoscs.capstone.allyojo.repository.UserRepository;
 import uoscs.capstone.allyojo.repository.VerificationRepository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -50,13 +50,14 @@ public class VerificationService {
                 .user(user)
                 .verificationDateTime(dto.getVerificationDateTime())
                 .value(Optional.ofNullable(dto.getValue()).orElse(0.0)) // value 값이 0인 경우(혈압, 혈당이 아닌 경우) 0.0으로 저장.
+                .value2(Optional.ofNullable(dto.getValue2()).orElse(0.0)) // 혈압인 경우 value2에 수축기 혈압 저장
                 .result(dto.getResult())
                 .build();
 
         return verificationRepository.save(verification);
     }
 
-    // 리포트 조회
+    // 리포트 조회 (혈압, 복약)
     public ReportResponseDTO getReport(ReportRequestDTO dto) {
 //        LocalDateTime startDateTime = startDate.atStartOfDay();
 //        LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
@@ -101,10 +102,9 @@ public class VerificationService {
         int numerator = countTrueVerification(username, mission.getMissionId(), startDate, endDate);
         double successRatio = (double) numerator / (double) denominator;
 
-
         // 평균 계산
         Double averageValue = null;
-        if (dto.getMissionName().equals("Manage blood pressure") || dto.getMissionName().equals("Manage blood sugar")) {
+        if (dto.getMissionName().equals("Manage blood sugar")) {
             OptionalDouble average = verifications.stream()
                     .filter(v -> v.getValue() != null)
                     .mapToDouble(Verification::getValue)
@@ -119,6 +119,56 @@ public class VerificationService {
         return new ReportResponseDTO(verificationDTOs, averageValue, successRatio);
     }
 
+
+
+    // 리포트 조회 (혈압)
+    public BloodPressureReportResponseDTO getBloodPressureReport(ReportRequestDTO dto) {
+
+        String username = dto.getUsername();
+        String missionName = dto.getMissionName();
+        LocalDateTime startDate = dto.getStartDate().atStartOfDay();
+        LocalDateTime endDate = dto.getEndDate().atTime(LocalTime.MAX);
+
+        Mission mission = missionRepository.findByMissionName(missionName)
+                .orElseThrow(MissionNotFoundException::new);
+
+        List<Verification> verifications = verificationRepository
+                .findByUserUsernameAndAlarmMissionMissionIdAndVerificationDateTimeBetween(
+                        username,
+                        mission.getMissionId(),
+                        startDate,
+                        endDate
+                );
+
+        int denominator = countFalseVerification(username, mission.getMissionId(), startDate, endDate);
+        int numerator = countTrueVerification(username, mission.getMissionId(), startDate, endDate);
+        double successRatio = (double) numerator / (double) denominator;
+
+        // 평균 계산
+        Double lowAverageValue = null;
+        Double highAverageValue = null;
+        if (dto.getMissionName().equals("Manage blood pressure")) {
+            OptionalDouble highValue = verifications.stream()
+                    .filter(v -> v.getValue() != null)
+                    .mapToDouble(Verification::getValue)
+                    .average();
+            highAverageValue = highValue.isPresent() ? highValue.getAsDouble() : 0.0;
+
+            OptionalDouble lowValue = verifications.stream()
+                    .filter(v -> v.getValue() != null)
+                    .mapToDouble(Verification::getValue2)
+                    .average();
+            lowAverageValue = lowValue.isPresent() ? lowValue.getAsDouble() : 0.0;
+        }
+
+        String bloodPressureResult = classifyBloodPressure(lowAverageValue, highAverageValue);
+
+        List<VerificationResponseDTO> verificationDTOs = verifications.stream()
+                .map(VerificationResponseDTO::fromVerification)
+                .toList();
+
+        return new BloodPressureReportResponseDTO(verificationDTOs, lowAverageValue, highAverageValue, bloodPressureResult, successRatio);
+    }
 
     // startDate, endDate 사이에 그 알람이 몇 번 발생해야 하는지 계산하는 메서드
     private int calculateTriggeredAlarmCount(Alarm alarm, LocalDateTime startDate, LocalDateTime endDate) {
@@ -149,4 +199,24 @@ public class VerificationService {
         return verificationRepository.countFalseByUserAndAlarmMissionMissionId(username, missionId, startDate, endDate);
     }
 
+    private String classifyBloodPressure(Double low, Double high) {
+        if (low == null || high == null) {
+            return "비정상 혈압 데이터 포함";
+        }
+        if (high < 120 && low < 80) {
+            return "정상 혈압";
+        } else if (high >= 140 && low < 90) {
+            return "수축기 단독 고혈압";
+        } else if (high >= 120 && high < 130 && low < 80) {
+            return "주의 혈압";
+        } else if ((high >= 130 && high < 140) || (low >= 80 && low < 90)) {
+            return "고혈압 전단계";
+        } else if ((high >= 140 && high < 160) || (low >= 90 && low < 100)) {
+            return "고혈압 1기";
+        } else if (high >= 160 || low >= 100) {
+            return "고혈압 2기";
+        } else {
+            return "예외처리";
+        }
+    }
 }
