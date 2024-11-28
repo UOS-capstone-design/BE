@@ -104,7 +104,7 @@ public class VerificationService {
 
         // 평균 계산
         Double averageValue = null;
-        if (dto.getMissionName().equals("혈압 측정") || dto.getMissionName().equals("혈당 측정")) {
+        if (dto.getMissionName().equals("Manage blood pressure") || dto.getMissionName().equals("Manage blood sugar")) {
             OptionalDouble average = verifications.stream()
                     .filter(v -> v.getValue() != null)
                     .mapToDouble(Verification::getValue)

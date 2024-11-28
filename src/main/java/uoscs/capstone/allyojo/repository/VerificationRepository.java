@@ -20,12 +20,25 @@ public interface VerificationRepository extends JpaRepository<Verification, Long
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate);
 
+//    List<Verification> findByUserUsernameAndAlarmMissionMissionIdAndVerificationDateTimeBetween(
+//            String username,
+//            Long missionId,
+//            LocalDateTime startDate,
+//            LocalDateTime endDate
+//    );
+
+    @Query("SELECT v FROM Verification v " +
+            "WHERE v.user.username = :username " +
+            "AND v.alarm.mission.missionId = :missionId " +
+            "AND v.verificationDateTime BETWEEN :startDate AND :endDate " +
+            "AND v.result = true")
     List<Verification> findByUserUsernameAndAlarmMissionMissionIdAndVerificationDateTimeBetween(
-            String username,
-            Long missionId,
-            LocalDateTime startDate,
-            LocalDateTime endDate
+            @Param("username") String username,
+            @Param("missionId") Long missionId,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
     );
+
 
     @Query("SELECT COUNT(v) FROM Verification v " +
             "WHERE v.user.username = :username " +

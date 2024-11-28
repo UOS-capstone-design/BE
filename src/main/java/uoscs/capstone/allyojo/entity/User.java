@@ -36,6 +36,11 @@ public class User {
     @JoinColumn(name = "guardianId")
     private Guardian guardian;
 
+    private Integer age;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Alarm> alarms;
 
@@ -49,13 +54,17 @@ public class User {
             String name,
             UserGrade userGrade,
             String phoneNumber,
-            Guardian guardian) {
+            Guardian guardian,
+            Integer age,
+            Gender gender) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.userGrade = userGrade;
         this.phoneNumber = phoneNumber;
         this.guardian = guardian;
+        this.age = age;
+        this.gender = gender;
     }
 
     public void addGuardian(Guardian guardian) {
