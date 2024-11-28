@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -16,5 +17,6 @@ public class TodoRequestDTO {
     private String username; // findUserIdByUsername
     private String taskName;
     private String taskDescription;
-    private LocalDateTime taskDateTime;
+    private LocalDate taskDate;
+    private LocalDateTime taskTime;
 }

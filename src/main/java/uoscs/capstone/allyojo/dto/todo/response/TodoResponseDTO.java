@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import uoscs.capstone.allyojo.entity.Todo;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -16,7 +17,8 @@ public class TodoResponseDTO {
     private Long todoId;
     private String taskName;
     private String taskDescription;
-    private LocalDateTime taskDateTime;
+    private LocalDate taskDate;
+    private LocalDateTime taskTime;
 
     // 엔티티로부터 ResponseDTO 생성
     public static TodoResponseDTO fromTodo(Todo todo) {
@@ -24,7 +26,8 @@ public class TodoResponseDTO {
                 .todoId(todo.getTodoId())
                 .taskName(todo.getTaskName())
                 .taskDescription(todo.getTaskDescription())
-                .taskDateTime(todo.getTaskDateTime())
+                .taskDate(todo.getTaskDate())
+                .taskTime(todo.getTaskTime())
                 .build();
     }
 }
