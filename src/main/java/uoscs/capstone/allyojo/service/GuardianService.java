@@ -76,6 +76,13 @@ public class GuardianService {
         return guardianRepository.existsByGuardianName(guardianName);
     }
 
+    // 보호자 정보 조회
+    public Guardian getGuardianInfo(String guardianName) {
+        return guardianRepository.findByGuardianName(guardianName)
+                .orElseThrow(GuardianNotFoundException::new);
+    }
+
+
     // 보호자가 유저를 추가
     public User addUserToGuardian(AddUserToGuardianRequestDTO dto) {
         String guardianName = dto.getGuardianName();
