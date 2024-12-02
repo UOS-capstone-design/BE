@@ -57,7 +57,7 @@ public class VerificationService {
         return verificationRepository.save(verification);
     }
 
-    // 리포트 조회 (혈압, 복약)
+    // 리포트 조회 (혈당, 복약)
     public ReportResponseDTO getReport(ReportRequestDTO dto) {
 //        LocalDateTime startDateTime = startDate.atStartOfDay();
 //        LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
