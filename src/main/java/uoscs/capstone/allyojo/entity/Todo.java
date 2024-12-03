@@ -3,6 +3,7 @@ package uoscs.capstone.allyojo.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -29,8 +30,8 @@ public class Todo {
     private String taskDescription;
 
     @Column(nullable = false)
-    private LocalDateTime taskDateTime;
+    private LocalDate taskDate;
 
-
-
+    @Column(nullable = false)
+    private LocalDateTime taskTime;
 }

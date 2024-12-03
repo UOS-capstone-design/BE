@@ -29,6 +29,9 @@ public class Alarm {
     @Column(nullable = false) // 알람시간: LocalTime
     private LocalDateTime alarmTime;
 
+    @Column(nullable = true) // title: 어떤 알람인지
+    private String title;
+
     @Column(nullable = false) // 알람활성여부
     private Boolean active;
 
@@ -57,6 +60,9 @@ public class Alarm {
     @Column(nullable = false)
     private Boolean createdByGuardian = false;
 
+    // 알람 삭제 시 -> disabled = true
+    @Column(nullable = false)
+    private Boolean disabled = false;
 
     //// 알람요일 관련 메서드
     // 요일별 알람 비트를 체크하는 메서드
@@ -84,6 +90,7 @@ public class Alarm {
     public void update(
             Mission mission,
             LocalDateTime alarmTime,
+            String title,
             Boolean active,
             Integer alarmDays,
             Integer delayTimes,
@@ -91,10 +98,12 @@ public class Alarm {
             Boolean isVibration,
             Integer volume,
             Integer alarmInterval,
-            Boolean createdByGuardian
+            Boolean createdByGuardian,
+            Boolean disabled
     ) {
         this.mission = mission;
         this.alarmTime = alarmTime;
+        this.title = title;
         this.active = active;
         this.alarmDays = alarmDays;
         this.delayTimes = delayTimes;
@@ -103,5 +112,6 @@ public class Alarm {
         this.volume = volume;
         this.alarmInterval = alarmInterval;
         this.createdByGuardian = createdByGuardian;
+        this.disabled = disabled;
     }
 }

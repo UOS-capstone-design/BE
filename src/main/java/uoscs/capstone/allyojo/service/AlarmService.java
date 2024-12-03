@@ -42,6 +42,7 @@ public class AlarmService {
                 .user(user)
                 .mission(mission)
                 .alarmTime(dto.getAlarmTime())
+                .title(dto.getTitle())
                 .active(parseBoolean(dto.getActive()))
                 .alarmDays(dto.getAlarmDays())
                 .delayTimes(dto.getDelayTimes())
@@ -50,13 +51,14 @@ public class AlarmService {
                 .volume(dto.getVolume())
                 .alarmInterval(dto.getAlarmInterval())
                 .createdByGuardian(false)
+                .disabled(false)
                 .build();
 
         return alarmRepository.save(alarm);
     }
     // 알람 조회
     public List<Alarm> findAllByUsername(String username) {
-          return alarmRepository.findAllByUserUsername(username); // 빈 리스트 반환 가능.
+          return alarmRepository.findAllByUserUsernameAndDisabledIsFalse(username); // 빈 리스트 반환 가능.
     }
 
     // 알려줘 탭 전용 알람 리턴 ( alarmDays != 0 and delayTimes >= 1)
@@ -76,6 +78,7 @@ public class AlarmService {
                 .user(alarm.getUser()) // 기존 유저 유지
                 .mission(alarm.getMission()) // 기존 미션 유지
                 .alarmTime(dto.getAlarmTime())
+                .title(dto.getTitle())
                 .active(parseBoolean(dto.getActive()))
                 .alarmDays(dto.getAlarmDays())
                 .delayTimes(dto.getDelayTimes())
@@ -84,6 +87,7 @@ public class AlarmService {
                 .volume(dto.getVolume())
                 .alarmInterval(dto.getAlarmInterval())
                 .createdByGuardian(false)
+                .disabled(dto.getDisabled())
                 .build();
 
         return alarmRepository.save(alarm);

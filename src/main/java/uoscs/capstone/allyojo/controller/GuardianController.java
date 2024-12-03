@@ -8,12 +8,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uoscs.capstone.allyojo.dto.alarm.request.AlarmRequestDTO;
 import uoscs.capstone.allyojo.dto.alarm.response.AlarmResponseDTO;
-import uoscs.capstone.allyojo.dto.guardian.request.AddUserToGuardianRequestDTO;
-import uoscs.capstone.allyojo.dto.guardian.request.GuardianJoinRequestDTO;
-import uoscs.capstone.allyojo.dto.guardian.request.UpdateUsersAlarmRequestDTO;
+import uoscs.capstone.allyojo.dto.guardian.request.*;
 import uoscs.capstone.allyojo.dto.guardian.response.AlarmContainUserinfoResponseDTO;
 import uoscs.capstone.allyojo.dto.guardian.response.GuardianResponseDTO;
+import uoscs.capstone.allyojo.dto.nutrient.request.FoodReportRequestDTO;
+import uoscs.capstone.allyojo.dto.nutrient.response.FoodReportResponseDTO;
 import uoscs.capstone.allyojo.dto.user.response.UserResponseDTO;
+import uoscs.capstone.allyojo.dto.verification.request.ReportRequestDTO;
+import uoscs.capstone.allyojo.dto.verification.response.BloodPressureReportResponseDTO;
+import uoscs.capstone.allyojo.dto.verification.response.ReportResponseDTO;
 import uoscs.capstone.allyojo.entity.Alarm;
 import uoscs.capstone.allyojo.entity.Guardian;
 import uoscs.capstone.allyojo.entity.User;
@@ -53,6 +56,14 @@ public class GuardianController {
         return ResponseEntity.ok(response);
     }
 
+    // 보호자 정보 조회
+    @GetMapping("/{guardianName}")
+    @Operation(summary = "보호자 정보 조회", description = "보호자의 정보를 조회합니다.")
+    public ResponseEntity<GuardianResponseDTO> getGuardianInfo(@PathVariable String guardianName) {
+        Guardian guardian = guardianService.getGuardianInfo(guardianName);
+        GuardianResponseDTO responseDTO = GuardianResponseDTO.fromGuardian(guardian);
+        return ResponseEntity.ok(responseDTO);
+    }
 
     @PutMapping("/addUser")
     @Operation(summary = "유저 추가", description = "보호자가 관리하는 유저를 추가합니다.")
@@ -130,5 +141,26 @@ public class GuardianController {
 
         guardianService.deleteAlarmForUser(guardianName, username, alarmId);
         return ResponseEntity.ok("알람이 삭제되었습니다.");
+    }
+
+    @PostMapping("/report")
+    @Operation(summary = "보호자 리포트 조회", description = "보호자가 관리하는 노인의 혈당 or 복약 리포트를 조회합니다.")
+    public ResponseEntity<ReportResponseDTO> getReport(@RequestBody GuardianReportRequestDTO dto) {
+        ReportResponseDTO report = guardianService.getReport(dto);
+        return ResponseEntity.ok(report);
+    }
+
+    @PostMapping("/report/bloodPressure")
+    @Operation(summary = "보호자 혈압 리포트 조회", description = "보호자가 관리하는 노인의 혈압 리포트를 조회합니다.")
+    public ResponseEntity<BloodPressureReportResponseDTO> getBloodPressureReport(@RequestBody GuardianReportRequestDTO dto) {
+        BloodPressureReportResponseDTO report = guardianService.getBloodPressureReport(dto);
+        return ResponseEntity.ok(report);
+    }
+
+    @PostMapping("/report/food")
+    @Operation(summary = "보호자 식사 리포트 조회", description = "보호자가 관리하는 노인의 식사 리포트를 조회합니다.")
+    public ResponseEntity<FoodReportResponseDTO> getNutrientReport(@RequestBody GuardianFoodReportRequestDTO dto) {
+        FoodReportResponseDTO report = guardianService.getFoodReport(dto);
+        return ResponseEntity.ok(report);
     }
 }

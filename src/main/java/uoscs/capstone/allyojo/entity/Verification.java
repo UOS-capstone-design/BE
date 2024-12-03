@@ -33,6 +33,10 @@ public class Verification {
     @Column(nullable = true) // nullable. 측정 값이 없는 경우
     private Double value;
 
+
+    @Column(nullable = true) // nullable, 혈압 미션: 수축기 / 이완기인 경우 사용
+    private Double value2;
+
     private Boolean result;
 
     @OneToMany(mappedBy = "verification", fetch = FetchType.LAZY)

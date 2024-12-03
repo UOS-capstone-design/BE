@@ -16,6 +16,7 @@ import java.time.LocalTime;
 public class AlarmResponseDTO {
     private Long alarmId;
     private LocalDateTime alarmTime;
+    private String title;
     private String missionName;
     private Boolean active;
     private Integer alarmDays;
@@ -25,12 +26,14 @@ public class AlarmResponseDTO {
     private Integer volume;
     private Integer alarmInterval;
     private Boolean createdByGuardian;
+    private Boolean disabled;
 
     // 엔티티로부터 ResponseDTO 생성
     public static AlarmResponseDTO fromAlarm(Alarm alarm) {
         return AlarmResponseDTO.builder()
                 .alarmId(alarm.getAlarmId())
                 .alarmTime(alarm.getAlarmTime())
+                .title(alarm.getTitle())
                 .missionName(alarm.getMission().getMissionName())
                 .active(alarm.getActive())
                 .alarmDays(alarm.getAlarmDays())
@@ -40,6 +43,7 @@ public class AlarmResponseDTO {
                 .volume(alarm.getVolume())
                 .alarmInterval(alarm.getAlarmInterval())
                 .createdByGuardian(alarm.getCreatedByGuardian())
+                .disabled(alarm.getDisabled())
                 .build();
     }
 }

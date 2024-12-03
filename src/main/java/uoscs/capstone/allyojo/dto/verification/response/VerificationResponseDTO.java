@@ -18,6 +18,7 @@ public class VerificationResponseDTO {
     private Long userId;
     private LocalDateTime verificationDateTime;
     private Double value;
+    private Double value2;
     private Boolean result;
 
     public static VerificationResponseDTO fromVerification(Verification verification) {
@@ -27,6 +28,7 @@ public class VerificationResponseDTO {
                 .userId(verification.getUser().getUserId())
                 .verificationDateTime(verification.getVerificationDateTime())
                 .value(verification.getValue())
+                .value2(verification.getValue2())
                 .result(verification.getResult())
                 .build();
     }

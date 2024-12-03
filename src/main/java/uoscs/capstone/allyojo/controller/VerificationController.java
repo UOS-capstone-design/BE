@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uoscs.capstone.allyojo.dto.verification.request.ReportRequestDTO;
 import uoscs.capstone.allyojo.dto.verification.request.VerificationRequestDTO;
+import uoscs.capstone.allyojo.dto.verification.response.BloodPressureReportResponseDTO;
 import uoscs.capstone.allyojo.dto.verification.response.ReportResponseDTO;
 import uoscs.capstone.allyojo.dto.verification.response.VerificationResponseDTO;
 import uoscs.capstone.allyojo.entity.Verification;
@@ -52,5 +53,11 @@ public class VerificationController {
         return ResponseEntity.ok(report);
     }
 
-
+    // 혈압 리포트 조회
+    @PostMapping("/report/bloodPressure")
+    @Operation(summary = "혈압 리포트 조회", description = "주어진 날짜 사이에 포함된 혈압 리포트를 제공합니다.")
+    public ResponseEntity<BloodPressureReportResponseDTO> getBloodPressureReport(@RequestBody ReportRequestDTO reportRequestDTO) {
+        BloodPressureReportResponseDTO report = verificationService.getBloodPressureReport(reportRequestDTO);
+        return ResponseEntity.ok(report);
+    }
 }

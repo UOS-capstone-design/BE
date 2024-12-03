@@ -6,9 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import uoscs.capstone.allyojo.dto.alarm.request.AlarmRequestDTO;
-import uoscs.capstone.allyojo.dto.guardian.request.AddUserToGuardianRequestDTO;
-import uoscs.capstone.allyojo.dto.guardian.request.GuardianJoinRequestDTO;
-import uoscs.capstone.allyojo.dto.guardian.request.UpdateUsersAlarmRequestDTO;
+import uoscs.capstone.allyojo.dto.guardian.request.*;
+import uoscs.capstone.allyojo.dto.nutrient.request.FoodReportRequestDTO;
+import uoscs.capstone.allyojo.dto.nutrient.response.FoodReportResponseDTO;
+import uoscs.capstone.allyojo.dto.verification.request.ReportRequestDTO;
+import uoscs.capstone.allyojo.dto.verification.response.BloodPressureReportResponseDTO;
+import uoscs.capstone.allyojo.dto.verification.response.ReportResponseDTO;
 import uoscs.capstone.allyojo.entity.*;
 import uoscs.capstone.allyojo.exception.alarm.AlarmNotFoundException;
 import uoscs.capstone.allyojo.exception.guardian.GuardianNotFoundException;
@@ -34,7 +37,9 @@ public class GuardianService {
     private final UserRepository userRepository;
     private final MissionRepository missionRepository;
     private final AlarmRepository alarmRepository;
+    private final VerificationService verificationService;
     private final UserService userService;
+    private final NutrientService nutrientService;
 
     // 보호자 회원가입
     public Guardian joinGuardian(GuardianJoinRequestDTO guardianJoinRequestDTO) {
@@ -75,6 +80,13 @@ public class GuardianService {
     public boolean isGuardianNameDuplicate(String guardianName) {
         return guardianRepository.existsByGuardianName(guardianName);
     }
+
+    // 보호자 정보 조회
+    public Guardian getGuardianInfo(String guardianName) {
+        return guardianRepository.findByGuardianName(guardianName)
+                .orElseThrow(GuardianNotFoundException::new);
+    }
+
 
     // 보호자가 유저를 추가
     public User addUserToGuardian(AddUserToGuardianRequestDTO dto) {
@@ -118,6 +130,7 @@ public class GuardianService {
                 .user(user)
                 .mission(mission)
                 .alarmTime(dto.getAlarmTime())
+                .title(dto.getTitle())
                 .active(parseBoolean(dto.getActive()))
                 .alarmDays(dto.getAlarmDays())
                 .delayTimes(dto.getDelayTimes())
@@ -126,6 +139,7 @@ public class GuardianService {
                 .volume(dto.getVolume())
                 .alarmInterval(dto.getAlarmInterval())
                 .createdByGuardian(true)
+                .disabled(false)
                 .build();
 
         return alarmRepository.save(alarm);
@@ -170,6 +184,7 @@ public class GuardianService {
         alarm.update(
                 mission,
                 dto.getAlarmTime(),
+                dto.getTitle(),
                 Boolean.parseBoolean(dto.getActive()),
                 dto.getAlarmDays(),
                 dto.getDelayTimes(),
@@ -177,7 +192,8 @@ public class GuardianService {
                 Boolean.parseBoolean(dto.getIsVibration()),
                 dto.getVolume(),
                 dto.getAlarmInterval(),
-                true
+                true,
+                dto.getDisabled()
         );
 
         return alarmRepository.save(alarm);
@@ -194,5 +210,70 @@ public class GuardianService {
             throw new UserNotManagedException();
         }
         alarmRepository.deleteById(alarmId);
+    }
+
+    // 보호자 유저 리포트 조회 (혈당, 복약)
+    public ReportResponseDTO getReport(GuardianReportRequestDTO dto) {
+        Guardian guardian = guardianRepository.findByGuardianName(dto.getGuardianName())
+                .orElseThrow(GuardianNotFoundException::new);
+        User user = userRepository.findByUsername(dto.getUsername())
+                .orElseThrow(UserNotFoundException::new);
+
+        // 보호자가 해당 노인을 관리하는지 확인
+        if (!guardian.getUsers().contains(user)) {
+            throw new UserNotManagedException();
+        }
+
+        ReportRequestDTO reportRequestDTO = ReportRequestDTO.builder()
+                .username(dto.getUsername())
+                .missionName(dto.getMissionName())
+                .startDate(dto.getStartDate())
+                .endDate(dto.getEndDate())
+                .build();
+
+        return verificationService.getReport(reportRequestDTO);
+    }
+
+    // 보호자 식사 리포트 조회
+    public BloodPressureReportResponseDTO getBloodPressureReport(GuardianReportRequestDTO dto) {
+        Guardian guardian = guardianRepository.findByGuardianName(dto.getGuardianName())
+                .orElseThrow(GuardianNotFoundException::new);
+        User user = userRepository.findByUsername(dto.getUsername())
+                .orElseThrow(UserNotFoundException::new);
+
+        // 보호자가 해당 노인을 관리하는지 확인
+        if (!guardian.getUsers().contains(user)) {
+            throw new UserNotManagedException();
+        }
+
+        ReportRequestDTO reportRequestDTO = ReportRequestDTO.builder()
+                .username(dto.getUsername())
+                .missionName(dto.getMissionName())
+                .startDate(dto.getStartDate())
+                .endDate(dto.getEndDate())
+                .build();
+
+        return verificationService.getBloodPressureReport(reportRequestDTO);
+    }
+
+
+    // 보호자 혈압 리포트 조회
+    public FoodReportResponseDTO getFoodReport(GuardianFoodReportRequestDTO dto) {
+        Guardian guardian = guardianRepository.findByGuardianName(dto.getGuardianName())
+                .orElseThrow(GuardianNotFoundException::new);
+        User user = userRepository.findByUsername(dto.getUsername())
+                .orElseThrow(UserNotFoundException::new);
+
+        // 보호자가 해당 노인을 관리하는지 확인
+        if (!guardian.getUsers().contains(user)) {
+            throw new UserNotManagedException();
+        }
+
+        FoodReportRequestDTO foodReportRequestDTO = FoodReportRequestDTO.builder()
+                .username(dto.getUsername())
+                .reportDate(dto.getReportDate())
+                .build();
+
+        return nutrientService.getFoodReport(foodReportRequestDTO);
     }
 }

@@ -31,7 +31,8 @@ public class TodoService {
                 .user(user)
                 .taskName(dto.getTaskName())
                 .taskDescription(dto.getTaskDescription())
-                .taskDateTime(dto.getTaskDateTime())
+                .taskDate(dto.getTaskDate())
+                .taskTime(dto.getTaskTime())
                 .build();
 
         return todoRepository.save(todo);
@@ -48,9 +49,10 @@ public class TodoService {
         todo = Todo.builder()
                 .todoId(todo.getTodoId())
                 .user(todo.getUser())
-                .taskName(todo.getTaskName())
-                .taskDescription(todo.getTaskDescription())
-                .taskDateTime(todo.getTaskDateTime())
+                .taskName(dto.getTaskName())
+                .taskDescription(dto.getTaskDescription())
+                .taskDate(dto.getTaskDate())
+                .taskTime(dto.getTaskTime())
                 .build();
 
         return todoRepository.save(todo);

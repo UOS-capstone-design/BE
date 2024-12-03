@@ -11,8 +11,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReportResponseDTO {
+public class BloodPressureReportResponseDTO {
     private List<VerificationResponseDTO> verifications;
-    private Double averageValue; // 기간 내 혈당의 평균값
+    private Double lowAverageValue; // 이완기
+    private Double highAverageValue; // 수축기
+    private String BloodPressureResult; // 혈압 분류 결과
     private double successRatio;
 }
