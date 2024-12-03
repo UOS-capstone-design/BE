@@ -59,7 +59,7 @@ public class GuardianController {
     // 보호자 정보 조회
     @GetMapping("/{guardianName}")
     @Operation(summary = "보호자 정보 조회", description = "보호자의 정보를 조회합니다.")
-    public ResponseEntity<GuardianResponseDTO> getGuardianInfo(@RequestParam String guardianName) {
+    public ResponseEntity<GuardianResponseDTO> getGuardianInfo(@PathVariable String guardianName) {
         Guardian guardian = guardianService.getGuardianInfo(guardianName);
         GuardianResponseDTO responseDTO = GuardianResponseDTO.fromGuardian(guardian);
         return ResponseEntity.ok(responseDTO);
