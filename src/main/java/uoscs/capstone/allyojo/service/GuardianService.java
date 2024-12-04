@@ -7,6 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import uoscs.capstone.allyojo.dto.alarm.request.AlarmRequestDTO;
 import uoscs.capstone.allyojo.dto.guardian.request.*;
+import uoscs.capstone.allyojo.dto.guardian.response.FindAllUsersResponseDTO;
 import uoscs.capstone.allyojo.dto.nutrient.request.FoodReportRequestDTO;
 import uoscs.capstone.allyojo.dto.nutrient.response.FoodReportResponseDTO;
 import uoscs.capstone.allyojo.dto.verification.request.ReportRequestDTO;
@@ -18,11 +19,9 @@ import uoscs.capstone.allyojo.exception.guardian.GuardianNotFoundException;
 import uoscs.capstone.allyojo.exception.guardian.UserNotManagedException;
 import uoscs.capstone.allyojo.exception.mission.MissionNotFoundException;
 import uoscs.capstone.allyojo.exception.user.UserNotFoundException;
-import uoscs.capstone.allyojo.repository.AlarmRepository;
-import uoscs.capstone.allyojo.repository.GuardianRepository;
-import uoscs.capstone.allyojo.repository.MissionRepository;
-import uoscs.capstone.allyojo.repository.UserRepository;
+import uoscs.capstone.allyojo.repository.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Boolean.parseBoolean;
@@ -40,6 +39,7 @@ public class GuardianService {
     private final VerificationService verificationService;
     private final UserService userService;
     private final NutrientService nutrientService;
+    private final VerificationRepository verificationRepository;
 
     // 보호자 회원가입
     public Guardian joinGuardian(GuardianJoinRequestDTO guardianJoinRequestDTO) {
@@ -104,11 +104,25 @@ public class GuardianService {
     }
 
     // 보호자가 관리하는 노인 리스트 조회
-    public List<User> getManagedUsers(String guardianName) { // guardianName은 로그인할 때 쓰는 아이디
+    public List<FindAllUsersResponseDTO> getManagedUsers(String guardianName) { // guardianName은 로그인할 때 쓰는 아이디
         Guardian guardian = guardianRepository.findByGuardianName(guardianName)
                 .orElseThrow(GuardianNotFoundException::new);
 
-        return guardian.getUsers();
+        List<User> users = guardian.getUsers();
+        List<FindAllUsersResponseDTO> findAllUsersResponseDTOS = new ArrayList<>();
+        for (User user : users) {
+            List<String> missions = verificationRepository.findDistinctMissionNamesByUsername(user.getUsername());
+            FindAllUsersResponseDTO findAllUsersResponseDTO = FindAllUsersResponseDTO.builder()
+                    .username(user.getUsername())
+                    .name(user.getName())
+                    .phoneNumber(user.getPhoneNumber())
+                    .age(user.getAge())
+                    .gender(user.getGender().name())
+                    .missions(missions)
+                    .build();
+            findAllUsersResponseDTOS.add(findAllUsersResponseDTO);
+        }
+        return findAllUsersResponseDTOS;
     }
 
     // 보호자가 노인의 알람을 추가

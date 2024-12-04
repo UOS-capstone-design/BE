@@ -10,11 +10,10 @@ import uoscs.capstone.allyojo.dto.alarm.request.AlarmRequestDTO;
 import uoscs.capstone.allyojo.dto.alarm.response.AlarmResponseDTO;
 import uoscs.capstone.allyojo.dto.guardian.request.*;
 import uoscs.capstone.allyojo.dto.guardian.response.AlarmContainUserinfoResponseDTO;
+import uoscs.capstone.allyojo.dto.guardian.response.FindAllUsersResponseDTO;
 import uoscs.capstone.allyojo.dto.guardian.response.GuardianResponseDTO;
-import uoscs.capstone.allyojo.dto.nutrient.request.FoodReportRequestDTO;
 import uoscs.capstone.allyojo.dto.nutrient.response.FoodReportResponseDTO;
 import uoscs.capstone.allyojo.dto.user.response.UserResponseDTO;
-import uoscs.capstone.allyojo.dto.verification.request.ReportRequestDTO;
 import uoscs.capstone.allyojo.dto.verification.response.BloodPressureReportResponseDTO;
 import uoscs.capstone.allyojo.dto.verification.response.ReportResponseDTO;
 import uoscs.capstone.allyojo.entity.Alarm;
@@ -74,14 +73,10 @@ public class GuardianController {
 
     @GetMapping("/{guardianName}/users")
     @Operation(summary = "보호자가 관리하는 유저 조회", description = "보호자가 관리하는 유저 리스트를 가져옵니다.")
-    public ResponseEntity<List<UserResponseDTO>> getManagedUsers(@PathVariable String guardianName) {
-        List<UserResponseDTO> userResponseDTOs = guardianService
-                .getManagedUsers(guardianName)
-                .stream()
-                .map(UserResponseDTO::fromUser)
-                .toList();
-
-        return ResponseEntity.ok(userResponseDTOs);
+    public ResponseEntity<List<FindAllUsersResponseDTO>> getManagedUsers(@PathVariable String guardianName) {
+        List<FindAllUsersResponseDTO> responseDTOS = guardianService
+                .getManagedUsers(guardianName);
+        return ResponseEntity.ok(responseDTOS);
     }
 
     @PostMapping("/{guardianName}/user/{username}/add")
