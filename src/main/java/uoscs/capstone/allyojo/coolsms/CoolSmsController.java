@@ -1,5 +1,6 @@
 package uoscs.capstone.allyojo.coolsms;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ public class CoolSmsController {
     private final CoolSmsService coolSmsService;
 
     @PostMapping
+    @Operation(summary = "인증번호 발송", description = "coolsms api를 활용하여 인증번호를 생성하고 발송합니다.")
     public ResponseEntity<PhoneNumberVerificationResponseDTO> verificationPhoneNumber(PhoneNumberVerificationRequsetDTO dto) {
         String verificationCode = this.coolSmsService.sendVerificationCode(dto.getPhoneNumber());
         return ResponseEntity.ok(new PhoneNumberVerificationResponseDTO(dto.getPhoneNumber(), verificationCode));
