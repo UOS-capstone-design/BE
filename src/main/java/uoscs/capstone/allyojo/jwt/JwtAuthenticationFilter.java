@@ -19,7 +19,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import uoscs.capstone.allyojo.auth.GuardianDetails;
 import uoscs.capstone.allyojo.auth.PrincipalDetails;
 import uoscs.capstone.allyojo.dto.user.request.LoginRequestDTO;
-import uoscs.capstone.allyojo.entity.User;
 
 import java.io.IOException;
 import java.util.Date;

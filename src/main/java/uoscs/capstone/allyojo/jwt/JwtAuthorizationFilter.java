@@ -18,7 +18,6 @@ import uoscs.capstone.allyojo.entity.Guardian;
 import uoscs.capstone.allyojo.entity.User;
 import uoscs.capstone.allyojo.exception.global.ErrorCode;
 import uoscs.capstone.allyojo.exception.global.JwtException;
-import uoscs.capstone.allyojo.exception.user.UserNotFoundException;
 import uoscs.capstone.allyojo.repository.GuardianRepository;
 import uoscs.capstone.allyojo.repository.UserRepository;
 
