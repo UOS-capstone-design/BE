@@ -28,7 +28,10 @@ public enum ErrorCode {
     TODO_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "해당 아이디의 투두가 없습니다."),
 
     // jwt
-    JWT_SIGNATURE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "토큰 서명 중 오류가 발생했습니다.");
+    JWT_SIGNATURE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "토큰 서명 중 오류가 발생했습니다."),
+
+    // coolsms
+    COOLSMS_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "휴대전화 인증 과정 중 오류가 발생했습니다.");
 
     private final Integer status;
     private final String message;

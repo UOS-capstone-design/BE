@@ -9,7 +9,6 @@ import uoscs.capstone.allyojo.entity.User;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 @Data
 public class PrincipalDetails implements UserDetails {
