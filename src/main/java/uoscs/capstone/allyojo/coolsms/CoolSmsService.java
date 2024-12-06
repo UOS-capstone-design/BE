@@ -1,6 +1,7 @@
 package uoscs.capstone.allyojo.coolsms;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.Random;
 
 @Service
+@Slf4j
 @Getter
 public class CoolSmsService {
     @Value("${coolsms.apiKey}")
@@ -30,12 +32,18 @@ public class CoolSmsService {
         this.messageService = NurigoApp.INSTANCE.initialize(apiKey, secret, domain);
     }
 
-    public SingleMessageSentResponse sendVerificationCode(String phoneNumber) {
+    public String sendVerificationCode(String phoneNumber) {
+
+        String verificationCode = generateVerificationCode();
         Message message = new Message();
         message.setFrom(number);
         message.setTo(phoneNumber);
-        message.setText("[Allyojo] 인증번호는 [" + generateVerificationCode() + "] 입니다.");
-        return this.messageService.sendOne(new SingleMessageSendingRequest(message));
+        message.setText("[Allyojo] 인증번호는 [" + verificationCode + "] 입니다.");
+        SingleMessageSentResponse response = messageService.sendOne(new SingleMessageSendingRequest(message));
+
+        log.info("response = {}", response);
+
+        return verificationCode;
     }
 
     public String generateVerificationCode() {
