@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class PhoneNumberVerificationDTO {
+public class PhoneNumberVerificationRequsetDTO {
     private final String phoneNumber;
 }
