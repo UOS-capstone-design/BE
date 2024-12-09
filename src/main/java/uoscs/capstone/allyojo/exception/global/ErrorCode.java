@@ -13,10 +13,12 @@ public enum ErrorCode {
 
     // User
     USER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "해당 아이디의 유저가 없습니다."),
+    USER_PHONENUMBER_DUPLICATED(HttpStatus.INTERNAL_SERVER_ERROR.value(), "이미 가입된 전화번호입니다."),
 
     // Guardian
     GUARDIAN_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "해당 아이디의 보호자가 없습니다."),
     USER_NOT_MANAGED(HttpStatus.INTERNAL_SERVER_ERROR.value(), "해당 유저의 보호자로 등록되지 않았습니다."),
+    GUARDIAN_PHONENUMBER_DUPLICATED(HttpStatus.INTERNAL_SERVER_ERROR.value(), "이미 가입된 전화번호입니다."),
 
     // Mission
     MISSION_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "해당 아이디의 미션이 없습니다."),

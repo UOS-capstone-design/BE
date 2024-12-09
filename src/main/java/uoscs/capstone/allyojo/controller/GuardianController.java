@@ -13,12 +13,12 @@ import uoscs.capstone.allyojo.dto.guardian.response.AlarmContainUserinfoResponse
 import uoscs.capstone.allyojo.dto.guardian.response.FindAllUsersResponseDTO;
 import uoscs.capstone.allyojo.dto.guardian.response.GuardianResponseDTO;
 import uoscs.capstone.allyojo.dto.nutrient.response.FoodReportResponseDTO;
-import uoscs.capstone.allyojo.dto.user.response.UserResponseDTO;
 import uoscs.capstone.allyojo.dto.verification.response.BloodPressureReportResponseDTO;
 import uoscs.capstone.allyojo.dto.verification.response.ReportResponseDTO;
 import uoscs.capstone.allyojo.entity.Alarm;
 import uoscs.capstone.allyojo.entity.Guardian;
 import uoscs.capstone.allyojo.entity.User;
+import uoscs.capstone.allyojo.exception.guardian.GuardianPhoneNumberDuplicatedException;
 import uoscs.capstone.allyojo.repository.GuardianRepository;
 import uoscs.capstone.allyojo.service.GuardianService;
 
@@ -52,6 +52,17 @@ public class GuardianController {
         Map<String, Boolean> response = new HashMap<>();
         response.put("isDuplicate", isDuplicate);
 
+        return ResponseEntity.ok(response);
+    }
+
+    // 보호자 전화번호 중복 확인
+    @GetMapping("/{phoneNumber}/checkphone")
+    @Operation(summary = "보호자전화번호 중복 확인", description = "DB에 해당 보호자 전화번호가 있다면 예외를 발생시킵니다. ")
+    public ResponseEntity<Map<String, Boolean>> checkPhoneNumberDuplicate(@PathVariable String phoneNumber) {
+        boolean isDuplicate = guardianRepository.existsByPhoneNumber(phoneNumber);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("isDuplicated", isDuplicate);
         return ResponseEntity.ok(response);
     }
 

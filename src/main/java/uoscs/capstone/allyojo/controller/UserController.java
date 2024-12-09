@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import uoscs.capstone.allyojo.dto.user.request.UserJoinRequestDTO;
 import uoscs.capstone.allyojo.dto.user.response.UserResponseDTO;
 import uoscs.capstone.allyojo.entity.User;
+import uoscs.capstone.allyojo.exception.user.UserPhoneNumberDuplicatedException;
 import uoscs.capstone.allyojo.repository.UserRepository;
 import uoscs.capstone.allyojo.service.UserService;
 
@@ -52,6 +53,18 @@ public class UserController {
     @Operation(summary = "유저네임 중복 확인", description = "DB에 해당 유저네임이 있는지 조회하여 회원가입이 가능한지 리턴합니다.")
     public ResponseEntity<Map<String, Boolean>> checkUsernameDuplicate(@PathVariable String username) {
         boolean isDuplicate = userRepository.existsByUsername(username);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("isDuplicate", isDuplicate);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // 전화번호 중복 확인
+    @GetMapping("/{phoneNumber}/checkphone")
+    @Operation(summary = "유저전화번호 중복 확인", description = "DB에 해당 유저 전화번호가 있는지 조회하여 회원가입이 가능한지 리턴합니다.")
+    public ResponseEntity<Map<String, Boolean>> checkPhoneNumberDuplicate(@PathVariable String phoneNumber) {
+        boolean isDuplicate = userRepository.existsByPhoneNumber(phoneNumber);
 
         Map<String, Boolean> response = new HashMap<>();
         response.put("isDuplicate", isDuplicate);
